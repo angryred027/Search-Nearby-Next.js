@@ -1,10 +1,10 @@
 import React from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import { Button, Card, Icon, ListItem, SearchBar, Text } from 'react-native-elements';
+import { Dimensions, StyleSheet, SafeAreaView, View } from 'react-native';
+import { Button, Card, Divider, Icon, ListItem, SearchBar, Text } from 'react-native-elements';
 import { MapView } from 'expo';
 
 const { width, height } = Dimensions.get('window');
-const list = [
+const recentList = [
   {
     name: 'Bar Farha',
     icon: 'local-bar',
@@ -14,6 +14,18 @@ const list = [
     name: 'Food Truck Friday',
     icon: 'event',
     subtitle: 'Activity'
+  },
+]
+const nearbyList = [
+  {
+    name: 'Robert\'s Burgers',
+    icon: 'restaurant',
+    subtitle: 'Bar'
+  },
+  {
+    name: 'Modern Art Insititute',
+    icon: 'account-balance',
+    subtitle: 'Culture'
   },
 ]
 
@@ -57,11 +69,12 @@ export default class App extends React.Component {
             value={search}
             lightTheme
           />
-          { this.renderTonariList(list) }
-          <Text h4>
+          { this.renderTonariList(recentList) }
+          <Text h4 style={{marginBottom: 10}}>
             隣 Near You 
           </Text>
-          { this.renderTonariList(list) }
+          <Divider/>
+          { this.renderTonariList(nearbyList) }
         </View>
       </View>
     );
