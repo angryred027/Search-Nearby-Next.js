@@ -1,0 +1,90 @@
+{
+	"extends": [
+		"airbnb"
+	],
+	"parser": "babel-eslint",
+	"plugins": [
+		"react",
+		"react-native"
+	],
+	"env": {
+		// "react-native/react-native": true
+	},
+	"rules": {
+		"react/forbid-elements": [
+			2,
+			{
+				"forbid": []
+			}
+		],
+		"max-len": [
+			"error",
+			120
+		],
+		"lines-between-class-members": "off",
+		"global-require": "off",
+		"react/jsx-boolean-value": [
+			1,
+			"never",
+			{
+				"always": [
+					"expectedValue"
+				]
+			}
+		],
+		"react/default-props-match-prop-types": "off",
+		"react/require-default-props": "off",
+		"react/destructuring-assignment": [
+			"off",
+			"always"
+		],
+		"react/prefer-stateless-function": "off",
+		"react/jsx-filename-extension": "off",
+		"react/forbid-prop-types": "off",
+		"react/prop-types": [
+			2,
+			{
+				"skipUndeclared": true
+			}
+		],
+		"react/sort-comp": "off",
+		"react-native/no-raw-text": [
+			2,
+			{
+				"skip": [
+					"TextBlock"
+				]
+			}
+		],
+		"no-plusplus": [
+			"error",
+			{
+				"allowForLoopAfterthoughts": true
+			}
+		],
+		"no-else-return": "off",
+		"arrow-body-style": "off",
+		"arrow-parens": "off",
+		"jsx-a11y/anchor-has-content": "off",
+		"class-methods-use-this": "off",
+		"no-console": "error",
+		"no-duplicate-imports": "off",
+		"prefer-destructuring": [
+			"error",
+			{
+				"object": true,
+				"array": false
+			}
+		],
+		"import/extensions": [
+			"error",
+			"never"
+		],
+		"import/no-extraneous-dependencies": "off",
+		"import/no-unresolved": "off",
+		"import/no-useless-path-segments": "error",
+		"react/no-did-mount-set-state": "off",
+		"flowtype/define-flow-type": 1,
+		"implicit-arrow-linebreak": "off"
+	}
+}

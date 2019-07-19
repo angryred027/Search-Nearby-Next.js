@@ -3,30 +3,41 @@ import React from 'react';
 import { Dimensions, Platform, StyleSheet, SafeAreaView, View } from 'react-native';
 import { Button, Card, Divider, Icon, ListItem, SearchBar, Text } from 'react-native-elements';
 import { Constants, Location, MapView, Permissions } from 'expo';
+import { Marker, ProviderPropType } from 'react-native-maps'
 
 const { width, height } = Dimensions.get('window');
 const recentList = [
   {
-    name: 'Bar Farha',
+    key: 3,
+    title: 'Bar Farha',
     icon: 'local-bar',
-    subtitle: 'Bar'
+    subtitle: 'Bar',
+    latlng: {
+      longitude: -87.652340,
+      latitude: 41.886879
+    }
   },
   {
-    name: 'Food Truck Friday',
+    key:2, 
+    title: 'Food Truck Friday',
     icon: 'event',
-    subtitle: 'Activity'
+    subtitle: 'Activity',
+    latlng: {
+      longitude: -87.652340,
+      latitude: 41.886879
+    }
   },
 ]
 const nearbyList = [
   {
-    name: 'Robert\'s Burgers',
-    icon: 'restaurant',
-    subtitle: 'Bar'
-  },
-  {
-    name: 'Modern Art Insititute',
-    icon: 'account-balance',
-    subtitle: 'Culture'
+    key: 0,
+    title: 'Swift And Sons',
+    icon: 'local-bar',
+    subtitle: 'Bar',
+    latlng: {
+      longitude: -87.652340,
+      latitude: 41.886879
+    }
   },
 ]
 
@@ -43,7 +54,11 @@ export default class Home extends React.Component {
         latitude: 37,
         longitudeDelta: 0.04,
         latitudeDelta: 0.09,
-      }
+      },
+      iconSize: 8, // TODO should grow/shrink based on zoom, default is 26
+      showText: false, // TODO should change based on zoom
+      nearby: nearbyList,
+      recent: recentList,
     }
 
     componentWillMount() {
@@ -68,11 +83,12 @@ export default class Home extends React.Component {
         this.setState({ location });
         this.setState({
             region: {
-            longitude: location.coords.longitude,
-            latitude: location.coords.latitude,
-            longitudeDelta: 0.00,
-            latitudeDelta: 0.00,
-          }});
+              longitude: location.coords.longitude,
+              latitude: location.coords.latitude,
+              longitudeDelta: 0.04,
+              latitudeDelta: 0.09,
+          }
+        });
     };
   
     _updateSearch = search => {
@@ -95,30 +111,33 @@ export default class Home extends React.Component {
           <MapView
             style={{flex: 1}}
             region={this.state.region}
-          />
+          >
+          {this._renderTonariMarkers()}
+          </MapView>
           <View style={styles.card}>
-            <Text style={styles.textGreeting}>
-              Hello there!
-            </Text>
-            <Text h4 style={styles.textBanner}>
-              What Interests You?
-            </Text>
-            {/* <SearchBar
-              style={{marginBottom: 15}}
-              placeholder="Type Here..."
-              onChangeText={this._updateSearch}
-              value={search}
-              lightTheme
-            /> */}
-            { /*this._renderTonariList(recentList)*/ }
             <Text h4 style={{marginBottom: 10}}>
               隣 Near You 
             </Text>
             <Divider/>
-            { /* this._renderTonariList(nearbyList)*/ }
+          </View>
+          <View style={styles.menu}>
+            <Icon size={20} name='menu' color='white' reverseColor='black' reverse/>
           </View>
         </View>
       );
+    }
+
+    _renderTonariMarkers() {
+      return this.state.nearby.map(marker => (
+        <Marker
+          key={marker.key}
+        coordinate={marker.latlng}
+          title={marker.title}
+          description={marker.subtitle}
+        >
+          <Icon size={this.state.iconSize} name={marker.icon} reverse />
+        </Marker>
+      ));
     }
   
     _renderTonariList(items) {
@@ -126,7 +145,7 @@ export default class Home extends React.Component {
           <ListItem
             style={{ marginBottom: 15}}
             key={i}
-            leftIcon={{ name: l.icon}}
+            leftIcon={{ title: l.icon}}
             title={l.name}
             subtitle={l.subtitle}
             chevronColor="white"
@@ -156,6 +175,11 @@ export default class Home extends React.Component {
       marginLeft: 0, 
       marginRight: 0, 
       marginBottom: 0
+    },
+    menu: {
+      position: 'absolute',
+      top: 25,
+      left: 10
     },
     textGreeting: {
       marginBottom: 15
