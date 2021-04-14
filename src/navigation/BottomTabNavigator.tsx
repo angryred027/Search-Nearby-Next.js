@@ -44,28 +44,9 @@ export default function BottomTabNavigator() {
 function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
-
-const HeaderActions = () => (
-  <View style={{flexDirection: 'row'}}>
-    <IconButton
-      icon="plus-box"
-      color="#000"
-      size={30}
-      onPress={() => console.log("Pressed")}
-    />
-    <IconButton
-      icon="cog"
-      color="#000"
-      size={30}
-      onPress={() => console.log("Pressed")}
-    />
-  </View>
-);
-
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 const TabOneStack = createStackNavigator<TabOneParamList>();
-
 function TabOneNavigator() {
   return (
     <TabOneStack.Navigator>
@@ -79,7 +60,6 @@ function TabOneNavigator() {
 }
 
 const TabTwoStack = createStackNavigator<TabTwoParamList>();
-
 function TabTwoNavigator() {
   return (
     <TabTwoStack.Navigator>
