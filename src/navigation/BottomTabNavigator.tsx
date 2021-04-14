@@ -7,7 +7,10 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
+// import { HeaderRight } from '../components/HeaderRight';
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
+import { IconButton } from 'react-native-paper';
+import { View } from 'react-native';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -42,6 +45,23 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
+const HeaderActions = () => (
+  <View style={{flexDirection: 'row'}}>
+    <IconButton
+      icon="plus-box"
+      color="#000"
+      size={30}
+      onPress={() => console.log("Pressed")}
+    />
+    <IconButton
+      icon="cog"
+      color="#000"
+      size={30}
+      onPress={() => console.log("Pressed")}
+    />
+  </View>
+);
+
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 const TabOneStack = createStackNavigator<TabOneParamList>();
@@ -52,7 +72,7 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="TabOneScreen"
         component={TabOneScreen}
-        options={{ headerTitle: '隣 Near You' }}
+        options={{ headerShown: false}}
       />
     </TabOneStack.Navigator>
   );
@@ -66,7 +86,7 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
+        options={{ headerShown: false}}
       />
     </TabTwoStack.Navigator>
   );
