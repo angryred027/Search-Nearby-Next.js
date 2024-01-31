@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 export default function Notify() {
     const [count, setCount] = useState(0)
+    const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
 
     const games = [
         {
@@ -37,7 +38,7 @@ export default function Notify() {
         try {
             if (Notification) {
                 // A service worker must be registered in order to send notifications on iOS
-                navigator.serviceWorker.register('./public/sw.js', { scope: './public/' });
+                navigator.serviceWorker.register('./public/sw.js', { scope: './public/' }).then((result) => setRegistration(result))
                 return true
             }
         } catch (err) {
@@ -48,7 +49,9 @@ export default function Notify() {
         return false
     }
 
-    const randomNotification = () => {
+    const randomNotification = async () => {
+        if (!registration) return
+
         setCount(count + 1)
         navigator.setAppBadge && navigator.setAppBadge(count)
 
@@ -62,9 +65,12 @@ export default function Notify() {
                 title: "Hello, world!",
                 icon: notifImg,
                 badge: `${count}`,
-                // vibrate: true
             };
-            new Notification(notifTitle, options)
+
+            // You must use the service worker notification to show the notification
+            // e.g - new Notification(notifTitle, options) does not work on iOS
+            // despite working on other platforms
+            await registration.showNotification(notifTitle, options)
 
         } catch (err) {
             console.log(err)
