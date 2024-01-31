@@ -17,7 +17,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            By{" "}
+            Powered by{" "}
             <Image
               src="/vercel.svg"
               alt="Vercel Logo"
