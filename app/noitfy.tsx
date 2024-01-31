@@ -63,7 +63,7 @@ export default function Notify() {
             const options = {
                 body: notifBody,
                 title: "Hello, world!",
-                icon: notifImg,
+                icon: 'public/icon-192x192.png',
                 badge: `${count}`,
             };
 
