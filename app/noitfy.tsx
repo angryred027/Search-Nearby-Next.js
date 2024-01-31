@@ -70,7 +70,7 @@ export default function Notify() {
             // You must use the service worker notification to show the notification
             // e.g - new Notification(notifTitle, options) does not work on iOS
             // despite working on other platforms
-            await registration.showNotification(notifTitle, options)
+            await registration.showNotification(notifTitle, options).then((result: any) => console.log(result)).catch((err: any) => alert(err))
 
         } catch (err) {
             console.log(err)

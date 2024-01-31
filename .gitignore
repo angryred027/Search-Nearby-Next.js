@@ -2,6 +2,9 @@
 
 /.vscode
 
+#
+/public/public/*
+
 # dependencies
 /node_modules
 /.pnp
