@@ -11,9 +11,12 @@
   "dependencies": {
     "@serwist/next": "^8.4.4",
     "@serwist/sw": "^8.4.4",
+    "@vercel/analytics": "^1.1.2",
+    "mapbox-gl": "^3.1.2",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-mapbox-gl": "^5.1.1",
     "webpack": "^5.90.0"
   },
   "devDependencies": {
