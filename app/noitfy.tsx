@@ -2,50 +2,80 @@
 
 import { useEffect, useState } from 'react'
 
+export interface Nearby {
+    name: string
+    address: string
+}
+
 export default function Notify() {
     const [count, setCount] = useState(0)
+    const [isGranted, setIsGranted] = useState(false)
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
+
+    const nearbyRestaurants = [
+        {
+            name: "Proxi",
+            address: "565 W Randolph St, Chicago, IL 60661",
+        },
+        {
+            name: "Kumiko",
+            address: "630 W Lake St, Chicago, IL 60661",
+        },
+        {
+            name: "Gaijin",
+            address: "950 W Lake St, Chicago, IL 60661",
+        },
+        {
+            name: "S.K.Y.",
+            address: "1239 W 18th St, Chicago, IL 60608",
+        },
+        {
+            name: "The Purple Pig",
+            address: "444 Michigan Ave, Chicago, IL 60605",
+        },
+        {
+            name: "The Publican",
+            address: "837 W Fulton Market, Chicago, IL 60607",
+        },
+        {
+            name: "Monteverde",
+            address: "1020 W Madison St, Chicago, IL 60607",
+        },
+        {
+            name: "Roister",
+            address: "951 W Fulton Market, Chicago, IL 60607",
+        },
+    ] as Nearby[]
 
     useEffect(() => {
         if ("serviceWorker" in navigator && window.serwist !== undefined) {
             window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
+
+            window.addEventListener("beforeinstallprompt", (event: any) => {
+                console.log("Before install prompt: ", event);
+            });
+
+            window.addEventListener("appinstalled", (event: any) => {
+                console.log("App installed: ", event);
+            });
+
+            window.addEventListener("notificationclose", (event: any) => {
+                console.log("On notification close: ", event);
+            });
+
+            window.addEventListener("notificationclick", (event: any) => {
+                console.log("On notification click: ", event.notification.tag);
+                event.notification.close();
+            });
         }
     }, []);
 
-    const games = [
-        {
-            name: "Kittens Game",
-            author: "Bloodrizer",
-            slug: "kittens-game",
-        },
-        {
-            name: "A Dark Room",
-            author: "Amir Rajan",
-            slug: "a-dark-room",
-        },
-        {
-            name: "Candy Box 2",
-            author: "aniwey",
-            slug: "candy-box-2",
-        },
-        {
-            name: "Spaceplan",
-            author: "Jake Hollands",
-            slug: "spaceplan",
-        },
-        {
-            name: "Sandcastle Builder",
-            author: "mikep",
-            slug: "sandcastle-builder",
-        }
-    ]
+    useEffect(() => {
+        navigator.setAppBadge && navigator.setAppBadge(count)
+    }, [count])
 
     const isSupported = () => {
-        if (Notification) {
-            return true
-        }
-
-        // Assume unsupported
+        if (Notification) return true
         return false
     }
 
@@ -53,9 +83,9 @@ export default function Notify() {
         if (!registration) return
 
         try {
-            const randomItem = Math.floor(Math.random() * games.length);
-            const notifTitle = games[randomItem].name;
-            const notifBody = `Created by ${games[randomItem].author}.`;
+            const randomItem = Math.floor(Math.random() * nearbyRestaurants.length);
+            const notifTitle = nearbyRestaurants[randomItem].name;
+            const notifBody = `Created by ${nearbyRestaurants[randomItem].address}.`;
             // const notifImg = `data/img/${games[randomItem].slug}.jpg`;
             const options = {
                 body: notifBody,
@@ -69,7 +99,6 @@ export default function Notify() {
             await registration.showNotification(notifTitle, options);
 
             setCount(count + 1)
-            navigator.setAppBadge && navigator.setAppBadge(count)
         } catch (err: any) {
             console.log("Encountered a problem: " + err.message)
             console.log(err)
@@ -81,7 +110,7 @@ export default function Notify() {
         if (isSupported())
             Notification.requestPermission().then((result) => {
                 if (result === "granted") {
-                    randomNotification();
+                    setIsGranted(true);
                 } else {
                     alert("We weren't allowed to send you notifications. Permission state is: " + result);
                 }
@@ -95,11 +124,16 @@ export default function Notify() {
         }
     }
 
+
+
     return (
         <div className='flex flex-col'>
             <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={requestPermission}>Enable notifictions</button>
             <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={randomNotification}>Send a notifiction</button>
-            <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => navigator.clearAppBadge()}>Clear badge</button>
+            <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
+                navigator.clearAppBadge();
+                setCount(0)
+            }}>Clear badge</button>
         </div>
     )
 }
