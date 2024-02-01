@@ -9,7 +9,7 @@ export interface Nearby {
 
 export default function Notify() {
     const [count, setCount] = useState(0)
-    const [isGranted, setIsGranted] = useState(false)
+    const [isGranted, setIsGranted] = useState<boolean>()
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
 
     const nearbyRestaurants = [
@@ -68,6 +68,11 @@ export default function Notify() {
                 event.notification.close();
             });
         }
+
+        const updatePermission = () => {
+            setIsGranted(Notification.permission === "granted")
+        }
+        updatePermission()
     }, []);
 
     useEffect(() => {
@@ -84,12 +89,12 @@ export default function Notify() {
 
         try {
             const randomItem = Math.floor(Math.random() * nearbyRestaurants.length);
-            const notifTitle = nearbyRestaurants[randomItem].name;
-            const notifBody = `Created by ${nearbyRestaurants[randomItem].address}.`;
+            const notifTitle = `${nearbyRestaurants[randomItem].name} is nearby!`;
+            const notifBody = `Drop in at ${nearbyRestaurants[randomItem].address}.`;
             // const notifImg = `data/img/${games[randomItem].slug}.jpg`;
             const options = {
                 body: notifBody,
-                title: "Hello, world!",
+                title: notifTitle,
                 icon: 'icon-192x192.png', // notifImg,
             };
 
@@ -124,16 +129,25 @@ export default function Notify() {
         }
     }
 
+    const renderControl = () => {
+        if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
+
+        return (
+            <>
+                <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={randomNotification}>Send a notifiction</button>
+                <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
+                    navigator.clearAppBadge();
+                    setCount(0)
+                }}>Clear badge</button>
+            </>
+        )
+    }
+
 
 
     return (
         <div className='flex flex-col'>
-            <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={requestPermission}>Enable notifictions</button>
-            <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={randomNotification}>Send a notifiction</button>
-            <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
-                navigator.clearAppBadge();
-                setCount(0)
-            }}>Clear badge</button>
+            {renderControl()}
         </div>
     )
 }
