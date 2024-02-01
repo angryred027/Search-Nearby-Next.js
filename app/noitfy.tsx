@@ -1,10 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Notify() {
     const [count, setCount] = useState(0)
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
+
+    useEffect(() => {
+        if ("serviceWorker" in navigator && window.serwist !== undefined) {
+            window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
+        }
+    }, []);
 
     const games = [
         {
@@ -35,14 +41,8 @@ export default function Notify() {
     ]
 
     const isSupported = () => {
-        try {
-            if (Notification) {
-                // A service worker must be registered in order to send notifications on iOS
-                navigator.serviceWorker.register('./public/sw.js', { scope: './public/' }).then((result) => setRegistration(result))
-                return true
-            }
-        } catch (err) {
-            alert(err)
+        if (Notification) {
+            return true
         }
 
         // Assume unsupported
@@ -52,27 +52,26 @@ export default function Notify() {
     const randomNotification = async () => {
         if (!registration) return
 
-        setCount(count + 1)
-        navigator.setAppBadge && navigator.setAppBadge(count)
-
         try {
             const randomItem = Math.floor(Math.random() * games.length);
             const notifTitle = games[randomItem].name;
             const notifBody = `Created by ${games[randomItem].author}.`;
-            const notifImg = `data/img/${games[randomItem].slug}.jpg`;
+            // const notifImg = `data/img/${games[randomItem].slug}.jpg`;
             const options = {
                 body: notifBody,
                 title: "Hello, world!",
-                icon: 'public/icon-192x192.png',
-                badge: `${count}`,
+                icon: 'icon-192x192.png', // notifImg,
             };
 
             // You must use the service worker notification to show the notification
             // e.g - new Notification(notifTitle, options) does not work on iOS
             // despite working on other platforms
-            await registration.showNotification(notifTitle, options).then((result: any) => console.log(result)).catch((err: any) => alert(err))
+            await registration.showNotification(notifTitle, options);
 
-        } catch (err) {
+            setCount(count + 1)
+            navigator.setAppBadge && navigator.setAppBadge(count)
+        } catch (err: any) {
+            console.log("Encountered a problem: " + err.message)
             console.log(err)
             alert(err)
         }

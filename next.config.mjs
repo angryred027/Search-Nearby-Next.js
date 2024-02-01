@@ -1,13 +1,14 @@
-/** @type {import('next').NextConfig} */
-import withPWAInit from "next-pwa";
-
-const withPWA = withPWAInit({
-    dest: "public",
-    register: true,
-    scope: "/app",
-    sw: "/public/sw.js",
-  });
-  
-  export default withPWA({
+import withSerwistInit from "@serwist/next";
+      
+const withSerwist = withSerwistInit({
+    // Note: This is only an example. If you use Pages Router,
+    // use something else that works, such as "service-worker/index.ts".
+    swSrc: "app/sw.ts",
+    swDest: "public/sw.js",
+    register: false,
+    cacheOnFrontEndNav: true
+});
+         
+export default withSerwist({
     // Your Next.js config
-  });
+});
