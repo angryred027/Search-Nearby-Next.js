@@ -10,7 +10,9 @@ export interface Nearby {
 export default function Notify() {
     const [count, setCount] = useState(0)
     const [isGranted, setIsGranted] = useState<boolean>()
+    const [isInstalled, setIsInstalled] = useState<boolean>(false)
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
+
 
     const nearbyRestaurants = [
         {
@@ -49,35 +51,54 @@ export default function Notify() {
 
     useEffect(() => {
         if ("serviceWorker" in navigator && window.serwist !== undefined) {
-            window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
+            const updatePermission = () => {
+                setIsGranted(Notification.permission === "granted")
+            }
 
-            window.addEventListener("beforeinstallprompt", (event: any) => {
+            const beforeinstallprompt = (event: any) => {
                 console.log("Before install prompt: ", event);
-            });
+            }
 
-            window.addEventListener("appinstalled", (event: any) => {
+            const appinstalled = (event: any) => {
                 console.log("App installed: ", event);
-            });
+                setIsInstalled(true)
+            }
 
-            window.addEventListener("notificationclose", (event: any) => {
-                console.log("On notification close: ", event);
-            });
+            // Register the service worker
+            window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
+            updatePermission()
 
-            window.addEventListener("notificationclick", (event: any) => {
-                console.log("On notification click: ", event.notification.tag);
-                event.notification.close();
-            });
+            window.addEventListener("beforeinstallprompt", beforeinstallprompt);
+            window.addEventListener("appinstalled", appinstalled);
+
+            return () => {
+                window.removeEventListener("beforeinstallprompt", beforeinstallprompt);
+            }
         }
-
-        const updatePermission = () => {
-            setIsGranted(Notification.permission === "granted")
-        }
-        updatePermission()
     }, []);
 
     useEffect(() => {
         navigator.setAppBadge && navigator.setAppBadge(count)
     }, [count])
+
+    useEffect(() => {
+        if (registration) {
+            self.addEventListener("notificationclick", (event: any) => {
+                // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/notificationclick_event
+                console.log("On notification click: ", event.notification.tag);
+                event.notification.close();
+
+                // clients.openWindow(`${self.location.origin}`)
+
+                if (event.action === "open") {
+                    // Do something when the notification action is clicked
+                    console.log("Notification with OPEN action clicked");
+                } else {
+                    // clients.openWindow("/inbox");
+                }
+            });
+        }
+    }, [registration])
 
     const isSupported = () => {
         if (Notification) return true
@@ -96,6 +117,12 @@ export default function Notify() {
                 body: notifBody,
                 title: notifTitle,
                 icon: 'icon-192x192.png', // notifImg,
+                actions: [
+                    {
+                        action: "open",
+                        title: "Open the app",
+                    }
+                ]
             };
 
             // You must use the service worker notification to show the notification
@@ -130,10 +157,12 @@ export default function Notify() {
     }
 
     const renderControl = () => {
-        if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
+        // if (!isInstalled) return <div>Install the app to use notifications</div>
+        //if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
 
         return (
             <>
+                <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
                 <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={randomNotification}>Send a notifiction</button>
                 <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
                     navigator.clearAppBadge();
