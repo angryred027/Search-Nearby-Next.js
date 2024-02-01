@@ -81,25 +81,6 @@ export default function Notify() {
         navigator.setAppBadge && navigator.setAppBadge(count)
     }, [count])
 
-    useEffect(() => {
-        if (registration) {
-            self.addEventListener("notificationclick", (event: any) => {
-                // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/notificationclick_event
-                console.log("On notification click: ", event.notification.tag);
-                event.notification.close();
-
-                // clients.openWindow(`${self.location.origin}`)
-
-                if (event.action === "open") {
-                    // Do something when the notification action is clicked
-                    console.log("Notification with OPEN action clicked");
-                } else {
-                    // clients.openWindow("/inbox");
-                }
-            });
-        }
-    }, [registration])
-
     const isSupported = () => {
         if (Notification) return true
         return false
