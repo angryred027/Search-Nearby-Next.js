@@ -50,11 +50,7 @@ export default function Notify() {
     ] as Nearby[]
 
     useEffect(() => {
-        if ("serviceWorker" in navigator && window.serwist !== undefined) {
-            const updatePermission = () => {
-                setIsGranted(Notification.permission === "granted")
-            }
-
+        if ("serviceWorker" in navigator && window.serwist !== undefined && isSupported()) {
             const beforeinstallprompt = (event: any) => {
                 console.log("Before install prompt: ", event);
             }
@@ -66,7 +62,6 @@ export default function Notify() {
 
             // Register the service worker
             window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
-            updatePermission()
 
             window.addEventListener("beforeinstallprompt", beforeinstallprompt);
             window.addEventListener("appinstalled", appinstalled);
@@ -81,10 +76,10 @@ export default function Notify() {
         navigator.setAppBadge && navigator.setAppBadge(count)
     }, [count])
 
-    const isSupported = () => {
-        if (Notification) return true
-        return false
-    }
+    const isSupported = () =>
+        'Notification' in window &&
+        'serviceWorker' in navigator &&
+        'PushManager' in window
 
     const randomNotification = async () => {
         if (!registration) return
@@ -120,20 +115,21 @@ export default function Notify() {
     }
 
     const requestPermission = () => {
-        if (isSupported())
-            Notification.requestPermission().then((result) => {
-                if (result === "granted") {
-                    setIsGranted(true);
-                } else {
-                    alert("We weren't allowed to send you notifications. Permission state is: " + result);
-                }
-            }).catch((err) => {
-                console.log(err);
-                alert(err);
-            });
-        else {
-            // Alert the user that they need to install the web page to use notifications 
-            alert('You need to install this web page to use notifications');
+        try {
+            if (isSupported())
+                Notification.requestPermission().then((result) => {
+                    if (result === "granted") {
+                        setIsGranted(true);
+                    } else {
+                        alert("We weren't allowed to send you notifications. Permission state is: " + result);
+                    }
+                })
+            else {
+                // Alert the user that they need to install the web page to use notifications 
+                alert('You need to install this web page to use notifications');
+            }
+        } catch (err) {
+            console.log(err)
         }
     }
 
