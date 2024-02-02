@@ -15,6 +15,6 @@ export default function Nearby() {
         //         <Feature coordinates={[-0.481747846041145, 51.3233379650232]} />
         //     </Layer>
         // </Map>
-        <></>
+        <>Nearby</>
     )
 }

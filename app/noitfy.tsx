@@ -139,7 +139,7 @@ export default function Notify() {
 
     const renderControl = () => {
         // if (!isInstalled) return <div>Install the app to use notifications</div>
-        //if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
+        // if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
 
         return (
             <>
