@@ -50,11 +50,10 @@ export default function Notify() {
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
 
     useEffect(() => {
-        if ("serviceWorker" in navigator && "Notification" in window && "PushManager" in window) {
-            setIsSupported(true)
-        }
+        const hasRequisite = "serviceWorker" in navigator && "Notification" in window && "PushManager" in window
+        setIsSupported(hasRequisite)
 
-        if (window.serwist !== undefined && isSupported) {
+        if (window.serwist !== undefined && hasRequisite) {
             try {
                 setIsGranted(Notification.permission === "granted")
             } catch (err) {
@@ -79,8 +78,14 @@ export default function Notify() {
             return () => {
                 window.removeEventListener("beforeinstallprompt", beforeinstallprompt);
             }
+        } else {
+            console.warn("Service worker, notifications, or push manager not supported")
         }
     }, []);
+
+    useEffect(() => {
+        // setIsInstalled(registration?.active?.state === "activated")
+    }, [registration])
 
     useEffect(() => {
         navigator.setAppBadge && navigator.setAppBadge(count)
@@ -147,16 +152,19 @@ export default function Notify() {
         if (!isSupported) return <div><p>Install the app to use notifications</p><button className='flex-initial bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => installSheet()}>Show Me</button></div>
         if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
 
-        return (
-            <>
-                {/* <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button> */}
-                <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={randomNotification}>Send a notifiction</button>
-                <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
-                    navigator.clearAppBadge();
-                    setCount(0)
-                }}>Clear badge</button>
-            </>
-        )
+        if (registration?.active?.state === "activated")
+            return (
+                <>
+                    <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => randomNotification()}>Send a notifiction</button>
+                    <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
+                        navigator.clearAppBadge();
+                        setCount(0)
+                    }}>Clear badge</button>
+                </>
+            )
+
+        return <p>Setting up...</p>
+
     }
 
 
