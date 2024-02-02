@@ -46,10 +46,15 @@ export default function Notify() {
     const [count, setCount] = useState(0)
     const [isGranted, setIsGranted] = useState<boolean>()
     const [isInstalled, setIsInstalled] = useState<boolean>(false)
+    const [isSupported, setIsSupported] = useState<boolean>(false)
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
 
     useEffect(() => {
-        if ("serviceWorker" in navigator && window.serwist !== undefined && isSupported()) {
+        if ("serviceWorker" in navigator && "Notification" in window && "PushManager" in window) {
+            setIsSupported(true)
+        }
+
+        if (window.serwist !== undefined && isSupported) {
             try {
                 setIsGranted(Notification.permission === "granted")
             } catch (err) {
@@ -80,15 +85,6 @@ export default function Notify() {
     useEffect(() => {
         navigator.setAppBadge && navigator.setAppBadge(count)
     }, [count])
-
-    const isSupported = () => {
-        if ('serviceWorker' in navigator &&
-            'Notification' in window &&
-            'PushManager' in window)
-            return true
-
-        return false
-    }
 
     const randomNotification = async () => {
         if (!registration) return
@@ -125,7 +121,7 @@ export default function Notify() {
 
     const requestPermission = () => {
         try {
-            if (isSupported())
+            if (isSupported)
                 Notification.requestPermission().then((result) => {
                     if (result === "granted") {
                         setIsGranted(true);
@@ -148,7 +144,7 @@ export default function Notify() {
 
 
     const renderControl = () => {
-        if (!isSupported()) return <div><p>Install the app to use notifications</p><button className='flex-initial bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => installSheet()}>Show Me</button></div>
+        if (!isSupported) return <div><p>Install the app to use notifications</p><button className='flex-initial bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => installSheet()}>Show Me</button></div>
         if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
 
         return (
