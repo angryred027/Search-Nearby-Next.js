@@ -3,7 +3,7 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { Analytics } from '@vercel/analytics/react';
+// import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,7 +43,7 @@ export default function RootLayout({
       </Head>
       <body className={inter.className}>
         {children}
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

@@ -1,13 +1,12 @@
 'use client'
 
-import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+// import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
+// import 'mapbox-gl/dist/mapbox-gl.css';
 
-const Map = ReactMapboxGl({
-    accessToken: process.env.MAPBOX_TOKEN || ''
-});
+// const Map = ReactMapboxGl({
+//     accessToken: process.env.MAPBOX_TOKEN || ''
+// });
 
-// in render()
 export default function Nearby() {
 
     return (

@@ -63,18 +63,17 @@ export default function Notify() {
                 console.log("App installed: ", event);
                 setIsInstalled(true)
             }
-            window.serwist.update()
 
             // Register the service worker
             window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
             updatePermission()
 
-            // window.addEventListener("beforeinstallprompt", beforeinstallprompt);
-            // window.addEventListener("appinstalled", appinstalled);
+            window.addEventListener("beforeinstallprompt", beforeinstallprompt);
+            window.addEventListener("appinstalled", appinstalled);
 
-            // return () => {
-            //     window.removeEventListener("beforeinstallprompt", beforeinstallprompt);
-            // }
+            return () => {
+                window.removeEventListener("beforeinstallprompt", beforeinstallprompt);
+            }
         }
     }, []);
 
