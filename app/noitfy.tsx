@@ -1,46 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-export interface Nearby {
-    name: string
-    address: string
-}
-
-const nearbyRestaurants = [
-    {
-        name: "Proxi",
-        address: "565 W Randolph St, Chicago, IL 60661",
-    },
-    {
-        name: "Kumiko",
-        address: "630 W Lake St, Chicago, IL 60661",
-    },
-    {
-        name: "Gaijin",
-        address: "950 W Lake St, Chicago, IL 60661",
-    },
-    {
-        name: "S.K.Y.",
-        address: "1239 W 18th St, Chicago, IL 60608",
-    },
-    {
-        name: "The Purple Pig",
-        address: "444 Michigan Ave, Chicago, IL 60605",
-    },
-    {
-        name: "The Publican",
-        address: "837 W Fulton Market, Chicago, IL 60607",
-    },
-    {
-        name: "Monteverde",
-        address: "1020 W Madison St, Chicago, IL 60607",
-    },
-    {
-        name: "Roister",
-        address: "951 W Fulton Market, Chicago, IL 60607",
-    },
-] as Nearby[]
+import { nearbyRestaurants, Nearby } from './data'
+import { isNotifySupported } from './swSupport'
 
 export default function Notify() {
     const [count, setCount] = useState(0)
@@ -50,7 +12,7 @@ export default function Notify() {
     const [registration, setRegistration] = useState<ServiceWorkerRegistration>()
 
     useEffect(() => {
-        const hasRequisite = "serviceWorker" in navigator && "Notification" in window && "PushManager" in window
+        const hasRequisite = isNotifySupported()
         setIsSupported(hasRequisite)
 
         if (window.serwist !== undefined && hasRequisite) {
@@ -66,7 +28,7 @@ export default function Notify() {
 
             const appinstalled = (event: any) => {
                 console.log("App installed: ", event);
-                setIsInstalled(true)
+                // setIsInstalled(true)
             }
 
             // Register the service worker
@@ -84,8 +46,9 @@ export default function Notify() {
     }, []);
 
     useEffect(() => {
-        // setIsInstalled(registration?.active?.state === "activated")
-    }, [registration])
+        console.info("Service worker registration state: ", registration?.active?.state)
+        setIsInstalled(registration?.active?.state === "activated")
+    }, [registration?.active?.state])
 
     useEffect(() => {
         navigator.setAppBadge && navigator.setAppBadge(count)
@@ -147,30 +110,27 @@ export default function Notify() {
         // TODO: Show installation instructions for iOS, Android, Desktop
     }
 
-
     const renderControl = () => {
-        if (!isSupported) return <div><p>Install the app to use notifications</p><button className='flex-initial bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => installSheet()}>Show Me</button></div>
-        if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
+        if (!isSupported) return <div><p>Install the app to use notifications</p><button className='flex-initial bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => installSheet()}>Show Me</button></div>
+        if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
 
-        if (registration?.active?.state === "activated")
+        if (isInstalled)
             return (
-                <>
-                    <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => randomNotification()}>Send a notifiction</button>
-                    <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded-full' onClick={() => {
+                <div className='flex space-x-4'>
+                    <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => randomNotification()}>Send a notifiction</button>
+                    <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => {
                         navigator.clearAppBadge();
                         setCount(0)
                     }}>Clear badge</button>
-                </>
+                </div>
             )
 
         return <p>Setting up...</p>
 
     }
 
-
-
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-row justify-between'>
             {renderControl()}
         </div>
     )

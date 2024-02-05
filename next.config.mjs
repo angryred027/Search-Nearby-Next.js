@@ -6,9 +6,12 @@ const withSerwist = withSerwistInit({
     swSrc: "app/sw.ts",
     swDest: "public/sw.js",
     register: false,
-    cacheOnFrontEndNav: true,
+    // cacheOnFrontEndNav: true,
 });
          
 export default withSerwist({
     // Your Next.js config
+    env: {
+        MAPBOX_TOKEN: process.env.MAPBOX_TOKEN,
+    },
 });
