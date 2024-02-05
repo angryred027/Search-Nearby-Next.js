@@ -17,10 +17,8 @@ export default function Nearby() {
     const [viewport, setViewport] = useState({
         latitude: 41.948437,
         longitude: -87.655334,
-        zoom: 17,
+        zoom: 7,
     });
-
-    const [flights, setFlights] = useState([]);
 
     useEffect(() => {
         const hasRequisite = isGeoSupported();
@@ -31,7 +29,7 @@ export default function Nearby() {
 
                 nearbyMapRef.current?.getMap().flyTo({
                     center: [position.coords.longitude, position.coords.latitude],
-                    zoom: 17,
+                    zoom: 5,
                     speed: 0.8,
                     easing(t: unknown) {
                         return t;

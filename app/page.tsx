@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Notify from './noitfy';
 import Nearby from './nearby';
 

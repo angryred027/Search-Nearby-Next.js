@@ -1,11 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { nearbyRestaurants, Nearby } from './data'
 import { isNotifySupported } from './swSupport'
 
+import { NotificationContext } from './contexts'
+
 export default function Notify() {
-    const [count, setCount] = useState(0)
+    const notification = useContext(NotificationContext)
+    const [count, setCount] = useState(notification)
     const [isGranted, setIsGranted] = useState<boolean>()
     const [isInstalled, setIsInstalled] = useState<boolean>(false)
     const [isSupported, setIsSupported] = useState<boolean>(false)
@@ -130,8 +133,10 @@ export default function Notify() {
     }
 
     return (
-        <div className='flex flex-row justify-between'>
-            {renderControl()}
-        </div>
+        <NotificationContext.Provider value={count}>
+            <div className='flex flex-row justify-between'>
+                {renderControl()}
+            </div>
+        </NotificationContext.Provider>
     )
 }

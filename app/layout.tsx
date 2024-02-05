@@ -2,13 +2,13 @@ import type { Metadata, Viewport } from "next";
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
-// import { Analytics } from '@vercel/analytics/react';
+import Navigation from "./Navigation";
+import { NotificationContext } from "./contexts";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  applicationName: 'Tonari.io (隣)',
+  applicationName: '(隣) Tonari.io',
   title: "Tonari.io",
   description: "An app for collecting locations and activities of interest and quickly locating them when nearby",
   manifest: "/manifest.json",
@@ -41,7 +41,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </Head>
+
       <body className={inter.className}>
+        <Navigation />
         {children}
         {/* <Analytics /> */}
       </body>
