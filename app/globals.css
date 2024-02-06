@@ -31,3 +31,8 @@ body {
     text-wrap: balance;
   }
 }
+
+/* mapbox-gl overrides */
+.mapboxgl-popup-close-button {
+  padding: 0 0.5rem;
+}

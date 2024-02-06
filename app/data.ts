@@ -16,6 +16,16 @@ export const nearbyRestaurants = [
         }
     },
     {
+        name: "Gutheries Tavern",
+        address: "1300 W Addison St, Chicago, IL 60613",
+        position: {
+            coords: {
+                latitude: 41.9473149,
+                longitude: -87.6643298,
+            }
+        }
+    },
+    {
         name: "Proxi",
         address: "565 W Randolph St, Chicago, IL 60661",
         position: {
