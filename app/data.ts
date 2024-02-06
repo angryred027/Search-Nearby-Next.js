@@ -20,8 +20,8 @@ export const nearbyRestaurants = [
         address: "1300 W Addison St, Chicago, IL 60613",
         position: {
             coords: {
-                latitude: 41.9473149,
-                longitude: -87.6643298,
+                latitude: 41.94747046458411,
+                longitude: -87.66177636039986,
             }
         }
     },
