@@ -4,41 +4,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactMapGL, {
     Map,
     Marker,
-    Source,
-    Layer,
     NavigationControl, GeolocateControl,
     MapLayerMouseEvent,
     ViewStateChangeEvent,
     MapRef,
     MapboxEvent,
-    FillLayer,
-    CircleLayer
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { isGeoSupported } from './swSupport';
-import type { FeatureCollection } from 'geojson';
 
 import { nearbyRestaurants } from './data'
-
-const PARK_LAYER: FillLayer = {
-    id: 'landuse_park',
-    type: 'fill',
-    source: 'mapbox',
-    'source-layer': 'landuse',
-    filter: ['==', 'class', 'park'],
-    paint: {
-        'fill-color': '#4E3FC8'
-    }
-};
-
-const layerStyle: CircleLayer = {
-    id: 'TONARI_LAYER',
-    type: 'circle',
-    paint: {
-        'circle-radius': 10,
-        'circle-color': '#007cbf'
-    }
-};
+import mapboxgl from 'mapbox-gl';
 
 export default function Nearby() {
     const nearbyMapRef = useRef<MapRef>(null);
@@ -65,27 +41,18 @@ export default function Nearby() {
                         return t;
                     }
                 });
+
+                // TODO: add  amrker for user's current position?
+
             });
         } else {
             console.info("Geolocation is not supported");
         }
     }, []);
 
-    const onClickHandler = (event: MapLayerMouseEvent) => {
-        console.info("Map clicked: ", event)
-
-        const map = nearbyMapRef.current?.getMap();
-        if (!map) return;
-
-        // // If the user clicked on one of your markers, get its information.
-        // const features = map.queryRenderedFeatures(event.point, {
-        //     layers: ['TONARI_LAYER'] // replace with your layer name
-        // });
-        // if (!features.length) {
-        //     return;
-        // }
-        // const feature = features[0];
-    }
+    const popup = useMemo(() => {
+        return new mapboxgl.Popup();
+    }, [])
 
     const onLoadHandler = (event: MapboxEvent) => {
         console.info("Map loaded: ", event);
@@ -98,10 +65,23 @@ export default function Nearby() {
         nearbyRestaurants.map((restaurant, index) => {
             const { name, address, position } = restaurant
             const { latitude, longitude } = position.coords
-            console.info("Drawing poi: ", name)
             return (
-                <Marker key={`${address.replaceAll(' ', '')}`} latitude={latitude} longitude={longitude}>
-                    <img src="./icon-192x192.png" className="w-2 h-2 rounded" alt={name} />
+                <Marker key={`${address.replaceAll(' ', '')}`} latitude={latitude} longitude={longitude} onClick={(event) => {
+                    console.info("Marker clicked: ", name, address)
+
+                    // prevent other click handlers from executing
+                    event.originalEvent.stopPropagation()
+
+                    const map = nearbyMapRef.current?.getMap();
+                    if (!map) return;
+
+                    popup.setLngLat([longitude, latitude])
+                        .setOffset([0, -10])
+                        .setHTML(`<h1>${name}</h1><p>${address}</p>`)
+                        .addTo(map);
+
+                }}>
+                    <span className="cursor-pointer inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">隣</span>
                 </Marker>
             )
         }),
@@ -116,11 +96,10 @@ export default function Nearby() {
             initialViewState={viewport}
             onMove={(event: ViewStateChangeEvent) => { setViewport(event.viewState) }}
             onLoad={(event: MapboxEvent) => onLoadHandler(event)}
-            onClick={(event: MapLayerMouseEvent) => onClickHandler(event)}
             minZoom={15}
             maxZoom={19}
-            style={{ width: '100%', height: '100vh' }}
             attributionControl={false}
+            style={{ width: "100%", height: "100%" }}
             dragPan>
             <NavigationControl position="top-right" showCompass showZoom />
             <GeolocateControl position="top-right" positionOptions={{ enableHighAccuracy: true }} trackUserLocation showUserHeading />
