@@ -6,6 +6,16 @@ export interface Nearby {
 
 export const nearbyRestaurants = [
     {
+        name: "DMK Burger Bar",
+        address: "2954 N Sheffield Ave, Chicago, IL 60657",
+        position: { 
+            coords: {
+                longitude: 41.93618511174448,
+                latitude: -87.65412423165401,
+            }
+        }
+    },
+    {
         name: "Proxi",
         address: "565 W Randolph St, Chicago, IL 60661",
         position: {

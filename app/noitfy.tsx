@@ -1,7 +1,7 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
-import { nearbyRestaurants, Nearby } from './data'
+import { nearbyRestaurants } from './data'
 import { isNotifySupported } from './swSupport'
 
 import { NotificationContext } from './contexts'
