@@ -1,109 +1,245 @@
-export interface Nearby {
-    name: string
-    address: string,
-    position: GeolocationPosition
-}
-
-export const nearbyRestaurants = [
+export const nearbyData = [
     {
-        name: "DMK Burger Bar",
-        address: "2954 N Sheffield Ave, Chicago, IL 60657",
-        position: { 
-            coords: {
-                latitude: 41.93618511174448,
-                longitude: -87.65412423165401,
+        "id": "address.5469708079336236",
+        "type": "Feature",
+        "place_type": ["address"],
+        "relevance": 1,
+        "properties": {
+            "accuracy": "rooftop",
+            "mapbox_id": "dXJuOm1ieGFkcjpkYzQyYTZhOS03ZDNjLTQ2ZGMtOTRlNy01ZGE4NGU2YTQ4NDY"
+        },
+        "text": "North Sheffield Avenue",
+        "place_name": "2954 North Sheffield Avenue, Chicago, Illinois 60657, United States",
+        "center": [-87.654279, 41.936059],
+        "geometry": { "type": "Point", "coordinates": [-87.654279, 41.936059] },
+        "address": "2954",
+        "context": [
+            {
+                "id": "neighborhood.347262188",
+                "mapbox_id": "dXJuOm1ieHBsYzpGTExNN0E",
+                "wikidata": "Q3216469",
+                "text": "Lake View"
+            },
+            {
+                "id": "postcode.208400108",
+                "mapbox_id": "dXJuOm1ieHBsYzpER3Z1N0E",
+                "text": "60657"
+            },
+            {
+                "id": "place.59328748",
+                "mapbox_id": "dXJuOm1ieHBsYzpBNGxJN0E",
+                "wikidata": "Q1297",
+                "text": "Chicago"
+            },
+            {
+                "id": "district.5162732",
+                "mapbox_id": "dXJuOm1ieHBsYzpUc2Jz",
+                "wikidata": "Q108418",
+                "text": "Cook County"
+            },
+            {
+                "id": "region.17644",
+                "mapbox_id": "dXJuOm1ieHBsYzpST3c",
+                "wikidata": "Q1204",
+                "short_code": "US-IL",
+                "text": "Illinois"
+            },
+            {
+                "id": "country.8940",
+                "mapbox_id": "dXJuOm1ieHBsYzpJdXc",
+                "wikidata": "Q30",
+                "short_code": "us",
+                "text": "United States"
             }
-        }
+        ]
     },
     {
-        name: "Gutheries Tavern",
-        address: "1300 W Addison St, Chicago, IL 60613",
-        position: {
-            coords: {
-                latitude: 41.94747046458411,
-                longitude: -87.66177636039986,
+        "id": "poi.8590020559",
+        "type": "Feature",
+        "place_type": [
+            "poi"
+        ],
+        "relevance": 1,
+        "properties": {
+            "foursquare": "4af9b20df964a5206e1322e3",
+            "landmark": true,
+            "address": "2954 N Sheffield Ave",
+            "category": "burger joint"
+        },
+        "text": "MAPBOX: DMK Burger Bar",
+        "place_name": "DMK Burger Bar, 2954 N Sheffield Ave, Chicago, Illinois 60657, United States",
+        "center": [
+            -87.654191,
+            41.936198
+        ],
+        "geometry": {
+            "coordinates": [
+                -87.654191,
+                41.936198
+            ],
+            "type": "Point"
+        },
+        "context": [
+            {
+                "id": "neighborhood.347262188",
+                "mapbox_id": "dXJuOm1ieHBsYzpGTExNN0E",
+                "wikidata": "Q3216469",
+                "text": "Lake View"
+            },
+            {
+                "id": "postcode.208400108",
+                "mapbox_id": "dXJuOm1ieHBsYzpER3Z1N0E",
+                "text": "60657"
+            },
+            {
+                "id": "place.59328748",
+                "mapbox_id": "dXJuOm1ieHBsYzpBNGxJN0E",
+                "wikidata": "Q1297",
+                "text": "Chicago"
+            },
+            {
+                "id": "district.5162732",
+                "mapbox_id": "dXJuOm1ieHBsYzpUc2Jz",
+                "wikidata": "Q108418",
+                "text": "Cook County"
+            },
+            {
+                "id": "region.17644",
+                "mapbox_id": "dXJuOm1ieHBsYzpST3c",
+                "wikidata": "Q1204",
+                "short_code": "US-IL",
+                "text": "Illinois"
+            },
+            {
+                "id": "country.8940",
+                "mapbox_id": "dXJuOm1ieHBsYzpJdXc",
+                "wikidata": "Q30",
+                "short_code": "us",
+                "text": "United States"
             }
-        }
+        ]
     },
     {
-        name: "Proxi",
-        address: "565 W Randolph St, Chicago, IL 60661",
-        position: {
-            coords: {
-                latitude: 41.88445953467612,
-                longitude: -87.64254474699867,
+        "id": "poi.8590020559",
+        "type": "Feature",
+        "place_type": [
+            "poi"
+        ],
+        "relevance": 1,
+        "properties": {
+            "foursquare": "4af9b20df964a5206e1322e3",
+            "landmark": true,
+            "address": "2954 N Sheffield Ave",
+            "category": "burger joint"
+        },
+        "text": "GOOGLE: DMK Burger Bar",
+        "place_name": "DMK Burger Bar, 2954 N Sheffield Ave, Chicago, Illinois 60657, United States",
+        "center": [
+            -87.65414568922381, // -87.6566938, // -87.654191,
+            41.936225016960876, // 41.9360375, // 41.936198
+        ],
+        "geometry": {
+            "coordinates": [
+                -87.654191,
+                41.936198
+            ],
+            "type": "Point"
+        },
+        "context": [
+            {
+                "id": "neighborhood.347262188",
+                "mapbox_id": "dXJuOm1ieHBsYzpGTExNN0E",
+                "wikidata": "Q3216469",
+                "text": "Lake View"
+            },
+            {
+                "id": "postcode.208400108",
+                "mapbox_id": "dXJuOm1ieHBsYzpER3Z1N0E",
+                "text": "60657"
+            },
+            {
+                "id": "place.59328748",
+                "mapbox_id": "dXJuOm1ieHBsYzpBNGxJN0E",
+                "wikidata": "Q1297",
+                "text": "Chicago"
+            },
+            {
+                "id": "district.5162732",
+                "mapbox_id": "dXJuOm1ieHBsYzpUc2Jz",
+                "wikidata": "Q108418",
+                "text": "Cook County"
+            },
+            {
+                "id": "region.17644",
+                "mapbox_id": "dXJuOm1ieHBsYzpST3c",
+                "wikidata": "Q1204",
+                "short_code": "US-IL",
+                "text": "Illinois"
+            },
+            {
+                "id": "country.8940",
+                "mapbox_id": "dXJuOm1ieHBsYzpJdXc",
+                "wikidata": "Q30",
+                "short_code": "us",
+                "text": "United States"
             }
-        }
+        ]
     },
     {
-        name: "Kumiko",
-        address: "630 W Lake St, Chicago, IL 60661",
-        position: {
-            coords: {
-                latitude: 41.88602625623118,
-                longitude: -87.64407434699858,
+        "id": "poi.927712949455",
+        "type": "Feature",
+        "place_type": ["poi"],
+        "relevance": 0.96875,
+        "properties": {
+            "foursquare": "40b28c80f964a52005fc1ee3",
+            "landmark": true,
+            "address": "1300 W Addison St",
+            "category": "bar, pub, alcohol, liquor, beer"
+        },
+        "text": "Guthrie's Tavern",
+        "place_name": "Guthrie's Tavern, 1300 W Addison St, Chicago, Illinois 60613, United States",
+        "center": [-87.661657, 41.947221],
+        "geometry": {
+            "coordinates": [-87.661657, 41.947221],
+            "type": "Point"
+        },
+        "context": [
+            {
+                "id": "neighborhood.602434796",
+                "mapbox_id": "dXJuOm1ieHBsYzpJK2hzN0E",
+                "text": "Southport Corridor"
+            },
+            {
+                "id": "postcode.208072428",
+                "mapbox_id": "dXJuOm1ieHBsYzpER2J1N0E",
+                "text": "60613"
+            },
+            {
+                "id": "place.59328748",
+                "mapbox_id": "dXJuOm1ieHBsYzpBNGxJN0E",
+                "wikidata": "Q1297",
+                "text": "Chicago"
+            },
+            {
+                "id": "district.5162732",
+                "mapbox_id": "dXJuOm1ieHBsYzpUc2Jz",
+                "wikidata": "Q108418",
+                "text": "Cook County"
+            },
+            {
+                "id": "region.17644",
+                "mapbox_id": "dXJuOm1ieHBsYzpST3c",
+                "wikidata": "Q1204",
+                "short_code": "US-IL",
+                "text": "Illinois"
+            },
+            {
+                "id": "country.8940",
+                "mapbox_id": "dXJuOm1ieHBsYzpJdXc",
+                "wikidata": "Q30",
+                "short_code": "us",
+                "text": "United States"
             }
-        }
-    },
-    {
-        name: "Gaijin",
-        address: "950 W Lake St, Chicago, IL 60661",
-        position: {
-            coords: {
-                latitude: 41.885843856618656,
-                longitude: -87.6518450335057,
-            }
-        }
-    },
-    {
-        name: "S.K.Y.",
-        address: "1239 W 18th St, Chicago, IL 60608",
-        position: {
-            coords: {
-                latitude: 41.85792964332049,
-                longitude: -87.65775654514977,
-            }
-        }
-    },
-    {
-        name: "The Purple Pig",
-        address: "444 Michigan Ave, Chicago, IL 60605",
-        position: {
-            coords: {
-                latitude: 41.89091460545635,
-                longitude: -87.62453693137024,
-            }
-        }
-    },
-    {
-        name: "The Publican",
-        address: "837 W Fulton Market, Chicago, IL 60607",
-        position: {
-            coords: {
-                latitude: 41.88680260364329,
-                longitude: -87.64890344699857,
-            }
-        }
-    },
-    {
-        name: "Monteverde",
-        address: "1020 W Madison St, Chicago, IL 60607",
-        position: {
-            coords: {
-                latitude: 41.88245490742205,
-                longitude: -87.65315248181305,
-            }
-        }
-    },
-    {
-        name: "Roister",
-        address: "951 W Fulton Market, Chicago, IL 60607",
-        position: {
-            coords: {
-                latitude: 41.88667194213931,
-                longitude: -87.65187858932721
-            }
-        }
-    },
-] as Nearby[]
-
+        ]
+    }
+] as any[]

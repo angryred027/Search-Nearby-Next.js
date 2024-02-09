@@ -1,9 +1,10 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
-import { nearbyRestaurants } from './data'
-import { isNotifySupported } from './swSupport'
+import { BellIcon } from '@heroicons/react/24/solid'
 
+import { nearbyData } from './data'
+import { isNotifySupported } from './swSupport'
 import { NotificationContext } from './contexts'
 
 export default function Notify() {
@@ -61,9 +62,9 @@ export default function Notify() {
         if (!registration) return
 
         try {
-            const randomItem = Math.floor(Math.random() * nearbyRestaurants.length);
-            const notifTitle = `${nearbyRestaurants[randomItem].name} is nearby!`;
-            const notifBody = `Drop in at ${nearbyRestaurants[randomItem].address}.`;
+            const randomItem = Math.floor(Math.random() * nearbyData.length);
+            const notifTitle = `${nearbyData[randomItem].text} is nearby!`;
+            const notifBody = `Drop in at ${nearbyData[randomItem].properties?.address}.`;
             // const notifImg = `data/img/${games[randomItem].slug}.jpg`;
             const options = {
                 body: notifBody,
@@ -120,11 +121,15 @@ export default function Notify() {
         if (isInstalled)
             return (
                 <div className='flex space-x-4'>
-                    <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => randomNotification()}>Send a notifiction</button>
-                    <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => {
+                    <button className='flex-initial bg-gray-700 text-white font-bold py-2 px-2 rounded-full' onClick={() => randomNotification()}>
+                        <span className="absolute -inset-.5" />
+                        <span className="sr-only">View notifications</span>
+                        <BellIcon className="h-6 w-6 z-10" aria-hidden="true" />
+                    </button>
+                    {/* <button className='flex-initial bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => {
                         navigator.clearAppBadge();
                         setCount(0)
-                    }}>Clear badge</button>
+                    }}>Clear badge</button> */}
                 </div>
             )
 

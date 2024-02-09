@@ -44,7 +44,7 @@ export default function Navigation() {
                                             src="./icon-192x192.png"
                                             alt="Your Company"
                                         /> */}
-                                        <h1 className="text-2xl font-bold text-white">隣 Tonari<span className='text-sm'> .io</span></h1>
+                                        <h1 className="text-2xl font-bold text-white">隣 Tonari<span className='text-sm'>.app</span></h1>
                                     </div>
                                     <div className="hidden sm:ml-6 sm:block">
                                         <div className="flex space-x-4">

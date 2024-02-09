@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  applicationName: '(隣) Tonari.io',
-  title: "Tonari.io",
+  applicationName: '(隣) tonari.app',
+  title: "tonari.app",
   description: "An app for collecting locations and activities of interest and quickly locating them when nearby",
   manifest: "/manifest.json",
   appleWebApp: {
