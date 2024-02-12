@@ -47,6 +47,9 @@ export default function Search() {
         type="text"
         placeholder="Find something amazing..."
         value={searchText}
-        onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchText(event.target.value)}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setSearchText(event.target.value);
+            // handleSearch(event.target.value);
+        }}
     />)
 }

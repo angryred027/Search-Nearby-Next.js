@@ -8,16 +8,16 @@ export default function Home() {
   return (
     <div className='max-h-full overflow-y-hidden'>
       <main>
-        <div className="absolute w-full z-999">
-          <Navigation />
-        </div>
-        <div className="z-10 w-full max-w-prose px-4 flex flex-row gap-4 absolute top-20">
-          <div className="flex-grow">
-            <Search />
+        {/* <Navigation /> */}
+        <div className="absolute z-10 w-full justify-center flex flex-row gap-4 top-20 justify-center">
+          <div className="max-w-prose px-4 flex flex-row flex-grow gap-4">
+            <div className="flex-grow">
+              <Search />
+            </div>
+            <Notify />
           </div>
-          <Notify />
         </div>
-        <div className="w-dvw h-dvh pt-16">
+        <div className="w-dvw h-dvh">
           <Nearby />
         </div>
       </main>
