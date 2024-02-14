@@ -1,25 +1,17 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { APIProvider, AdvancedMarker, Map, useMapsLibrary, } from '@vis.gl/react-google-maps';
+import { AdvancedMarker, Map } from '@vis.gl/react-google-maps';
 import { isGeoSupported } from './swSupport';
 
 import { nearbyData } from './data'
 
 export default function Nearby() {
-    const nearbyMapRef = useRef<any>(null);
+    const nearbyMapRef = useRef<React.JSX.Element>(null);
     const token = process.env.MAPS_TOKEN || '';
 
-    const center = useMemo(() => ({ lat: 41.936198, lng: -87.654191 }), []);
-
-    const placesLib = useMapsLibrary('places');
-    const [placesService, setPlacesService] = useState<google.maps.places.PlacesService>();
-
-    useEffect(() => {
-        if (!placesLib) return;
-
-        setPlacesService(new placesLib.PlacesService(document.getElementById("map") as HTMLDivElement));
-    }, [placesLib]);
+    const [position, setPosition] = useState<GeolocationPosition>();
+    const center = useMemo(() => ({ lat: 41.9484424, lng: -87.657913 }), []);
 
     useEffect(() => {
         const hasRequisite = isGeoSupported();
@@ -27,13 +19,24 @@ export default function Nearby() {
         if (hasRequisite) {
             navigator.geolocation.getCurrentPosition((position) => {
                 console.info("Geolocation is supported");
+                setPosition(position);
             });
         } else {
             console.info("Geolocation is not supported");
         }
     }, []);
 
+    const userMarker = useMemo(() => {
+        if (!position) return;
 
+        const { latitude, longitude } = position?.coords;
+
+        return (
+            <AdvancedMarker className='cursor-pointer' key='userMarker' position={{ lat: latitude, lng: longitude }}>
+                <span style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className="animate-bounce cursor-pointer inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-blue-100 bg-blue-600 rounded-full">隣</span>
+            </AdvancedMarker>
+        )
+    }, [position]);
 
     const pins = useMemo(() =>
         nearbyData.map((restaurant, index) => {
@@ -46,7 +49,7 @@ export default function Nearby() {
 
             return (
                 <AdvancedMarker className='cursor-pointer' key={`${address.replaceAll(' ', '')}`} position={{ lat: latitude, lng: longitude }}>
-                    <span style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className="cursor-pointer inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">隣</span>
+                    <span style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className="cursor-pointer inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full" title='You are Here!'>隣</span>
                 </AdvancedMarker>
             )
         }),
@@ -54,10 +57,9 @@ export default function Nearby() {
     );
 
     return (
-        <APIProvider apiKey={token}>
-            <Map id={'map'} mapId={'bf51a910020fa25a'} defaultCenter={center} defaultZoom={16} gestureHandling={"greedy"} minZoom={14} maxZoom={22} disableDefaultUI>
-                {pins}
-            </Map>
-        </APIProvider>
+        <Map id={'map'} mapId={'bf51a910020fa25a'} defaultCenter={center} defaultZoom={16} gestureHandling={"greedy"} minZoom={14} maxZoom={22} disableDefaultUI fullscreenControl={false}>
+            {userMarker}
+            {pins}
+        </Map>
     )
 }

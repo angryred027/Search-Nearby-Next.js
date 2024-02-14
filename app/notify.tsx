@@ -121,7 +121,7 @@ export default function Notify() {
         if (isInstalled)
             return (
                 <div className='flex space-x-4'>
-                    <button className='flex-initial bg-gray-700 text-white font-bold py-2 px-2 rounded-full' onClick={() => randomNotification()}>
+                    <button className='flex-initial bg-gray-700 text-white font-bold py-2 px-2 rounded-full max-h-10' onClick={() => randomNotification()}>
                         <span className="absolute -inset-.5" />
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6 z-10" aria-hidden="true" />

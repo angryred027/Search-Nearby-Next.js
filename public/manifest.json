@@ -5,7 +5,7 @@
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "tonari.app (隣)",
+    "name": "(隣) tonari.app",
     "short_name": "Tonari",
     "description": "An app for collecting locations and activities of interest and quickly locating them when nearby",
     "icons": [
