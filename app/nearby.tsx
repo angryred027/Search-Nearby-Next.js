@@ -1,15 +1,14 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { AdvancedMarker, Map } from '@vis.gl/react-google-maps';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Map } from '@vis.gl/react-google-maps';
 import { isGeoSupported, isStorageSupported } from './swSupport';
 
-import { nearbyData } from './data'
 import Neighbor from './neighbor';
+import { PlacesContext } from './contexts';
 
 export default function Nearby() {
-    const nearbyMapRef = useRef<React.JSX.Element>(null);
-    const token = process.env.MAPS_TOKEN || '';
+    const myPlaces = useContext<any>(PlacesContext)
 
     const [position, setPosition] = useState<GeolocationPosition>();
     const center = useMemo(() => ({ lat: 41.9484424, lng: -87.657913 }), []);
@@ -20,11 +19,15 @@ export default function Nearby() {
 
         if (hasRequisite) {
             navigator.geolocation.getCurrentPosition((position) => {
-                console.info("Geolocation is supported");
+                console.info("[nearby] Geolocation is supported");
                 setPosition(position);
             });
         } else {
-            console.info("Geolocation is not supported");
+            console.info("[nearby] Geolocation is not supported");
+        }
+
+        if (hasOptional) {
+            console.info("[nearby] Storage is supported");
         }
 
         if (hasOptional) {
@@ -37,22 +40,31 @@ export default function Nearby() {
 
         const { latitude, longitude } = position?.coords;
 
-        return (<Neighbor id='you-are-here' latitude={latitude} longitude={longitude} color="blue" />)
+        return (<Neighbor id='you-are-here'
+            latitude={latitude}
+            longitude={longitude}
+            handleClick={() => console.info('Clicked: user location')}
+            color="blue"
+            extraClass='animate-bounce'
+            content="私"
+        />)
     }, [position]);
 
-    const pins = useMemo(() =>
-        nearbyData.map((restaurant, index) => {
+    const pins = useMemo(() => {
+        if (!myPlaces) return;
+        return myPlaces.map((restaurant: any, index: number) => {
+            console.info('[nearby] Rendering pins')
             const { text, properties, center, place_name } = restaurant
 
             const address = place_name
             const latitude = center[1]
             const longitude = center[0]
 
-            const id = `${address.replaceAll(' ', '')} | neighbor-${latitude}-${longitude}`
+            const id = `${address.replaceAll(' ', '')}` || `neighbor-${latitude}-${longitude}`
 
-            return (<Neighbor id={id} key={id} latitude={latitude} longitude={longitude} />)
-        }),
-        [nearbyData]
+            return (<Neighbor id={id} key={id} latitude={latitude} longitude={longitude} handleClick={() => console.info('Clicked: ' + id)} />)
+        })
+    }, [myPlaces]
     );
 
     return (

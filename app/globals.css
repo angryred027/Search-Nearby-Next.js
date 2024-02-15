@@ -38,3 +38,12 @@ nav {
   width: 100vw;
   z-index: 999
 }
+
+/* Google Maps */
+.gm-style-iw-d {
+  padding: 1em;
+}
+
+.gm-style-iw-d > div {
+  font-size: larger;
+}

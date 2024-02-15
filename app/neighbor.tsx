@@ -1,16 +1,27 @@
+'use client'
+
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 export interface neighborProps {
     id: string
     latitude: number
     longitude: number
+    handleClick: () => void
+    content?: any
     color?: string
+    extraClass?: string
 }
 
-export default function Neighbor({ id, latitude, longitude, color = 'red' }: neighborProps) {
+export default function Neighbor({ id, latitude, longitude, handleClick, content = '隣', color = 'red', extraClass }: neighborProps) {
+    // color = 'red'
+
+    const className = `h-8 w-8 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full text-${color}-100 bg-${color}-600 ${extraClass ?? ''}`
+
     return (
-        <AdvancedMarker className='cursor-pointer' key={id} position={{ lat: latitude, lng: longitude }}>
-            <span style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className={`cursor-pointer inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-${color}-100 bg-${color}-600 rounded-full`} title='You are Here!'>隣</span>
-        </AdvancedMarker>
+        <div className={className}>
+            <AdvancedMarker key={id} position={{ lat: latitude, lng: longitude }} onClick={() => handleClick()}>
+                <span id="tonari-marker" style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className={className}>{content}</span>
+            </AdvancedMarker>
+        </div>
     )
 }

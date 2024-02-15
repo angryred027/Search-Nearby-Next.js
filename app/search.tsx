@@ -1,11 +1,15 @@
 'use client'
 
-import { AdvancedMarker, useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { ChangeEvent, useEffect, useState } from "react"
+import { AdvancedMarker, Marker, useMarkerRef, useMap, useMapsLibrary, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useDebouncedCallback } from 'use-debounce';
 import { isGeoSupported } from "./swSupport";
+import { PlacesContext } from "./contexts";
+import { INearby } from "./types";
 
 export default function Search() {
+    // const [myPlaces, setMyPlaces] = useContext(PlacesContext)
+
     const [searchText, setSearchText] = useState<string>('')
     const [predictionResults, setPredictionResults] = useState<Array<google.maps.places.AutocompletePrediction>>([]);
 
@@ -23,11 +27,11 @@ export default function Search() {
 
         if (hasRequisite) {
             navigator.geolocation.getCurrentPosition((position) => {
-                console.info("Geolocation is supported");
+                console.info("[search] Geolocation is supported");
                 setPosition(position);
             });
         } else {
-            console.info("Geolocation is not supported");
+            console.info("[search] Geolocation is not supported");
         }
     }, []);
 
@@ -84,6 +88,9 @@ export default function Search() {
 
         placesService.getDetails({ placeId: place_id }, (place, status) => {
             if (status === "OK") {
+                setPredictionResults([]);
+                setSearchText('');
+
                 console.log(place);
 
                 if (!place || !map) return;
@@ -94,7 +101,21 @@ export default function Search() {
                 if (!lat || !lng) return;
                 map.panTo({ lat, lng });
 
-                const aMarker = new google.maps.Marker({ position: { lat, lng }, map, title: place.name });
+                const marker = new google.maps.Marker({ position: { lat, lng }, map, title: place.name });
+                const info = new google.maps.InfoWindow({ content: place.name }).open(map, marker);
+
+                // console.info("Adding place to myPlaces:")
+                // console.info(myPlaces);
+
+                // myPlaces.push({
+                //     id: '',
+                //     text: place.name,
+                //     center: [lng, lat],
+                // })
+                // console.info(`Added ${place.name} to myPlaces`);
+                // console.info(myPlaces);
+
+                // setMyPlaces(myPlaces);
             }
 
             setPredictionResults([]);
