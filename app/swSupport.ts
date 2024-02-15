@@ -5,3 +5,7 @@ export const isNotifySupported = () => {
 export const isGeoSupported = () => {
     return "serviceWorker" in navigator && "geolocation" in navigator;
 }
+
+export const isStorageSupported = () => {
+    return "serviceWorker" in navigator && "storage" in navigator;
+}

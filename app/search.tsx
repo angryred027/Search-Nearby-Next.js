@@ -96,6 +96,8 @@ export default function Search() {
 
                 const aMarker = new google.maps.Marker({ position: { lat, lng }, map, title: place.name });
             }
+
+            setPredictionResults([]);
         });
     };
 
