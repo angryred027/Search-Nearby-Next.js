@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tonari
+Tonari (隣) (Japanese for "Next Door") is an app for collecting locations and activities of interest and quickly locating them when nearby
 
 ## Getting Started
 

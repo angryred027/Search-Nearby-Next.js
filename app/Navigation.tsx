@@ -6,8 +6,8 @@ import { Bars3Icon, BellIcon, XMarkIcon, UserCircleIcon } from '@heroicons/react
 import { NotificationContext } from './contexts'
 
 const navigation = [
-    { name: 'Your List', href: '#', current: true },
-    { name: 'Nearby', href: '#', current: false },
+    { name: 'Your List', href: '#', current: false },
+    { name: 'Nearby', href: '#', current: true },
 ]
 
 function classNames(...classes: any[]) {
