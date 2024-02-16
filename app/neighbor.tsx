@@ -15,7 +15,25 @@ export interface neighborProps {
 export default function Neighbor({ id, latitude, longitude, handleClick, content = '隣', color = 'red', extraClass }: neighborProps) {
     // color = 'red'
 
-    const className = `h-8 w-8 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full text-${color}-100 bg-${color}-600 ${extraClass ?? ''}`
+    let extraStyles = ''
+    const baseStyles = 'h-8 w-8 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full'
+
+    switch (color) {
+        case 'blue':
+            extraStyles = 'bg-blue-600 text-blue-100'
+            break;
+        case 'green':
+            extraStyles = 'bg-green-600 text-green-100'
+            break;
+        case 'yellow':
+            extraStyles = 'bg-yellow-600 text-yellow-100'
+            break;
+        case 'red':
+        default:
+            extraStyles = 'bg-red-600 text-red-100'
+            break;
+    }
+    const className = `${baseStyles} ${extraStyles} ${extraClass ?? ''}`
 
     return (
         <div className={className}>
