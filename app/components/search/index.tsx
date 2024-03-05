@@ -3,9 +3,9 @@
 import { AdvancedMarker, Marker, useMarkerRef, useMap, useMapsLibrary, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useDebouncedCallback } from 'use-debounce';
-import { isGeoSupported } from "./swSupport";
-import { PlacesContext } from "./contexts";
-import { INearby } from "./types";
+import { isGeoSupported } from "../../swSupport";
+import { PlacesContext } from "../../contexts";
+import { INearby } from "../../types";
 
 export default function Search() {
     // const [myPlaces, setMyPlaces] = useContext(PlacesContext)

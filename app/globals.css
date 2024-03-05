@@ -47,3 +47,7 @@ nav {
 .gm-style-iw-d > div {
   font-size: larger;
 }
+
+.gm-style iframe + div { 
+  border:none!important; 
+}

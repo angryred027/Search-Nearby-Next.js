@@ -3,9 +3,9 @@
 import { useContext, useEffect, useState } from 'react'
 import { BellIcon } from '@heroicons/react/24/solid'
 
-import { nearbyData } from './data'
-import { isNotifySupported } from './swSupport'
-import { NotificationContext } from './contexts'
+import { nearbyData } from '../../data'
+import { isNotifySupported } from '../../swSupport'
+import { NotificationContext } from '../../contexts'
 
 export default function Notify() {
     const notification = useContext(NotificationContext)

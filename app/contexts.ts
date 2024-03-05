@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { INearby, NearbyContextType } from "./types";
+import { INearby } from "./types";
 
 export const NotificationContext = createContext(0)
 

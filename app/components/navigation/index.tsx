@@ -1,13 +1,14 @@
 'use client'
 
-import { Fragment, createContext, useContext, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
-import { NotificationContext } from './contexts'
+import { NotificationContext } from '../../contexts'
+import { useParams, usePathname } from 'next/navigation'
 
 const navigation = [
-    { name: 'Your List', href: '#', current: false },
-    { name: 'Nearby', href: '#', current: true },
+    { name: 'Your List', href: 'list', current: false },
+    { name: 'Nearby', href: 'nearby', current: true },
 ]
 
 function classNames(...classes: any[]) {
@@ -15,8 +16,10 @@ function classNames(...classes: any[]) {
 }
 
 export default function Navigation() {
+    const path = usePathname()
     const notification = useContext(NotificationContext)
     const [count, setCount] = useState(notification)
+
 
     return (
         <NotificationContext.Provider value={count}>
@@ -48,19 +51,22 @@ export default function Navigation() {
                                     </div>
                                     <div className="hidden sm:ml-6 sm:block">
                                         <div className="flex space-x-4">
-                                            {navigation.map((item) => (
-                                                <a
-                                                    key={item.name}
-                                                    href={item.href}
-                                                    className={classNames(
-                                                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                                        'rounded-md px-3 py-2 text-sm font-medium'
-                                                    )}
-                                                    aria-current={item.current ? 'page' : undefined}
-                                                >
-                                                    {item.name}
-                                                </a>
-                                            ))}
+                                            {navigation.map((item) => {
+                                                const isCurrent = path.replace('/', '') === item.href
+                                                return (
+                                                    <a
+                                                        key={item.name}
+                                                        href={item.href}
+                                                        className={classNames(
+                                                            isCurrent ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                            'rounded-md px-3 py-2 text-sm font-medium'
+                                                        )}
+                                                        aria-current={isCurrent ? 'page' : undefined}
+                                                    >
+                                                        {item.name}
+                                                    </a>
+                                                )
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -101,7 +107,7 @@ export default function Navigation() {
                                                 <Menu.Item>
                                                     {({ active }) => (
                                                         <a
-                                                            href="#"
+                                                            href="./profile"
                                                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                         >
                                                             Your Profile
@@ -111,7 +117,7 @@ export default function Navigation() {
                                                 <Menu.Item>
                                                     {({ active }) => (
                                                         <a
-                                                            href="#"
+                                                            href="./settings"
                                                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                         >
                                                             Settings

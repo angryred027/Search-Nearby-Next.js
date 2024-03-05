@@ -1,13 +1,13 @@
 'use client'
 
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Map } from '@vis.gl/react-google-maps';
-import { isGeoSupported, isStorageSupported } from './swSupport';
+import { Map as GMap } from '@vis.gl/react-google-maps';
+import { isGeoSupported, isStorageSupported } from '../../swSupport';
 
-import Neighbor from './neighbor';
-import { PlacesContext } from './contexts';
+import Neighbor from '../neighbor';
+import { PlacesContext } from '../../contexts';
 
-export default function Nearby() {
+export default function Map() {
     const myPlaces = useContext<any>(PlacesContext)
 
     const [position, setPosition] = useState<GeolocationPosition>();
@@ -68,9 +68,9 @@ export default function Nearby() {
     );
 
     return (
-        <Map id={'map'} mapId={'bf51a910020fa25a'} defaultCenter={center} defaultZoom={16} gestureHandling={"greedy"} minZoom={14} maxZoom={22} disableDefaultUI fullscreenControl={false}>
+        <GMap id={'map'} mapId={'bf51a910020fa25a'} defaultCenter={center} defaultZoom={16} gestureHandling={"greedy"} minZoom={14} maxZoom={22} disableDefaultUI fullscreenControl={false}>
             {userMarker}
             {pins}
-        </Map>
+        </GMap>
     )
 }
