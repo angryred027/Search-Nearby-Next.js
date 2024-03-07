@@ -22,7 +22,7 @@ export default function Navigation() {
 
     return (
         <NotificationContext.Provider value={count}>
-            <Disclosure as="nav" className="bg-gray-800">
+            <Disclosure as="nav" className="sticky bg-gray-800">
                 {({ open }) => (
                     <>
                         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -141,7 +141,7 @@ export default function Navigation() {
                         </div>
 
                         <Disclosure.Panel className="sm:hidden">
-                            <div className="space-y-1 px-2 pb-3 pt-2">
+                            <div className="space-y-1 px-2 pb-3 pt-2 -mb-[104px]">
                                 {navigation.map((item) => {
                                     const isCurrent = path.replace('/', '') === item.href
                                     return (

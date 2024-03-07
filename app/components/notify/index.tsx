@@ -1,7 +1,7 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
-import { BellIcon } from '@heroicons/react/24/solid'
+import { BellIcon, ArrowPathIcon, FolderPlusIcon, BellSlashIcon } from '@heroicons/react/24/solid'
 
 import { nearbyData } from '../../data'
 import { isNotifySupported } from '../../swSupport'
@@ -36,7 +36,9 @@ export default function Notify() {
             }
 
             // Register the service worker
-            window.serwist.register().then((result) => setRegistration(result)).catch((err) => alert(err))
+            window.serwist.register()
+                .then((result) => setRegistration(result))
+                .catch((err) => alert(err)).catch((err) => console.warn(err))
 
             window.addEventListener("beforeinstallprompt", beforeinstallprompt);
             window.addEventListener("appinstalled", appinstalled);
@@ -115,8 +117,25 @@ export default function Notify() {
     }
 
     const renderControl = () => {
-        if (!isSupported) return <div><p>Install the app to use notifications</p><button className='flex-initial bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 my-2 max-h-40 rounded-full' onClick={() => installSheet()}>Show Me</button></div>
-        if (!isGranted) return <button className='flex-initial bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-0 max-h-10 rounded-full' onClick={() => requestPermission()}>Enable notifictions</button>
+        if (!isSupported) return (
+            <div className='flex space-x-4'>
+                <button className='flex-initial bg-gray-700 text-white font-bold py-2 px-2 rounded-full max-h-10 max-w-10' >
+                    <span className="absolute -inset-.5" />
+                    <span className="sr-only">Install Tonari.app</span>
+                    <FolderPlusIcon className="h-6 w-6 z-10" aria-hidden="true" />
+                </button>
+            </div>
+        )
+
+        if (!isGranted) return (
+            <div className='flex space-x-4'>
+                <button className='flex-initial bg-gray-500 text-white font-bold py-2 px-2 rounded-full max-h-10 max-w-10' >
+                    <span className="absolute -inset-.5" />
+                    <span className="sr-only">Enable notifications</span>
+                    <BellSlashIcon className="h-6 w-6 z-10" aria-hidden="true" />
+                </button>
+            </div>
+        )
 
         if (isInstalled)
             return (
@@ -133,8 +152,15 @@ export default function Notify() {
                 </div>
             )
 
-        return <p>Setting up...</p>
-
+        return (
+            <div className='flex space-x-4'>
+                <button className='flex-initial bg-gray-700 text-white font-bold py-2 px-2 rounded-full max-h-10 max-w-10 animate-spin' disabled>
+                    <span className="absolute -inset-.5" />
+                    <span className="sr-only">Loading...</span>
+                    <ArrowPathIcon className="h-6 w-6 z-10" aria-hidden="true" />
+                </button>
+            </div>
+        )
     }
 
     return (

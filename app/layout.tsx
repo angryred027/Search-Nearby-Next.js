@@ -38,7 +38,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Navigation />
-          <div className="sticky z-10 w-full justify-center flex flex-row gap-4 top-16 justify-center h-[72px] backdrop-blur backdrop-filter bg-gray-800/10">
+          <div className="absolute z-10 w-full justify-center flex flex-row gap-4 top-16 justify-center h-[72px] backdrop-blur backdrop-filter bg-gray-800/10">
             <div className="max-w-prose p-4 flex flex-row flex-grow gap-4">
               <div className="flex-grow">
                 <Search />
@@ -46,7 +46,7 @@ export default function RootLayout({
               <Notify />
             </div>
           </div>
-          <span id="buffer" className="block min-h-16" aria-hidden />
+          <span id="buffer" className="block min-h-20" aria-hidden />
           {children}
         </Providers>
       </body>

@@ -123,7 +123,7 @@ export default function Search() {
     };
 
     return (
-        <div className="flex-grow">
+        <div id="search" className="flex-grow">
             <input className="w-full h-10 max-h-10 px-4 text-base text-gray-700 placeholder-gray-500 border-2 border-gray-300 rounded-lg focus:shadow-outline"
                 type="text"
                 placeholder="Find something amazing..."
@@ -134,7 +134,7 @@ export default function Search() {
                 }}
             />
             {predictionResults.length > 0 && (
-                <div className="bg-white border-2 rounded-lg">
+                <div id="search-results" className="bg-white border-2 rounded-lg">
                     <ul className="list-inside">
                         {predictionResults.map(({ place_id, description }) => (
                             <li key={place_id} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleClick(place_id)}>{description}</li>
