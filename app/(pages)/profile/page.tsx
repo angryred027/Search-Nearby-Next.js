@@ -1,5 +1,9 @@
 'use client'
 
 export default function Profile() {
-    return (<div className="w-dvw h-dvh px-8 py-20"><p>Profile</p></div>)
+    return (
+        <section id="page-profile">
+            <div className="w-dvw h-dvh p-4"><p>Profile</p></div>
+        </section>
+    )
 }

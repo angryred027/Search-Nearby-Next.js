@@ -1,11 +1,9 @@
 'use client'
 
-import { AdvancedMarker, Marker, useMarkerRef, useMap, useMapsLibrary, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
-import { ChangeEvent, useContext, useEffect, useState } from "react"
+import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { ChangeEvent, useEffect, useState } from "react"
 import { useDebouncedCallback } from 'use-debounce';
 import { isGeoSupported } from "../../swSupport";
-import { PlacesContext } from "../../contexts";
-import { INearby } from "../../types";
 
 export default function Search() {
     // const [myPlaces, setMyPlaces] = useContext(PlacesContext)
@@ -44,6 +42,8 @@ export default function Search() {
 
     useEffect(() => {
         if (!placesLib || !map) return;
+
+
 
         setPlacesService(new placesLib.PlacesService(map));
         setAutocompleteService(new placesLib.AutocompleteService());

@@ -1,5 +1,9 @@
 'use client'
 
 export default function Settings() {
-    return (<div className="w-dvw h-dvh px-8 py-20"><p>Settings</p></div>)
+    return (
+        <section id="page-settings">
+            <div className="w-dvw h-dvh p-4"><p>Settings</p></div>
+        </section>
+    )
 }

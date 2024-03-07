@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "./components/navigation";
+import Providers from "./utils/providers";
+import Notify from "./components/notify";
+import Search from "./components/search";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,9 +36,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navigation />
-        {children}
-        {/* <Analytics /> */}
+        <Providers>
+          <Navigation />
+          <div className="sticky z-10 w-full justify-center flex flex-row gap-4 top-16 justify-center h-[72px] backdrop-blur backdrop-filter bg-gray-800/10">
+            <div className="max-w-prose p-4 flex flex-row flex-grow gap-4">
+              <div className="flex-grow">
+                <Search />
+              </div>
+              <Notify />
+            </div>
+          </div>
+          <span id="buffer" className="block min-h-16" aria-hidden />
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Map as GMap } from '@vis.gl/react-google-maps';
 import { isGeoSupported, isStorageSupported } from '../../swSupport';
 
