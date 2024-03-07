@@ -129,7 +129,7 @@ export default function Notify() {
 
         if (!isGranted) return (
             <div className='flex space-x-4'>
-                <button className='flex-initial bg-gray-500 text-white font-bold py-2 px-2 rounded-full max-h-10 max-w-10' >
+                <button className='flex-initial bg-gray-500 text-white font-bold py-2 px-2 rounded-full max-h-10 max-w-10' onClick={() => requestPermission()}>
                     <span className="absolute -inset-.5" />
                     <span className="sr-only">Enable notifications</span>
                     <BellSlashIcon className="h-6 w-6 z-10" aria-hidden="true" />
