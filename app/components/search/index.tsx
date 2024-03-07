@@ -41,15 +41,18 @@ export default function Search() {
     }, [position, map])
 
     useEffect(() => {
-        if (!placesLib || !map) return;
+        if (!placesLib) return;
 
-
-
-        setPlacesService(new placesLib.PlacesService(map));
         setAutocompleteService(new placesLib.AutocompleteService());
         setSessionToken(new placesLib.AutocompleteSessionToken());
 
         return () => setAutocompleteService(null);
+    }, [placesLib])
+
+    useEffect(() => {
+        if (!placesLib || !map) return;
+        setPlacesService(new placesLib.PlacesService(map));
+
     }, [placesLib, map])
 
     const handleSearch = useDebouncedCallback(async (input) => {
@@ -65,6 +68,7 @@ export default function Search() {
 
         console.log(`Searching... ${input}`);
         if (!autocompleteService || !input) {
+            alert("No autocomplete service available");
             setPredictionResults([]);
             return;
         }
