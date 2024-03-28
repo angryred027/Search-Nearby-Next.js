@@ -1,12 +1,19 @@
 'use client'
 
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useDebouncedCallback } from 'use-debounce';
 import { isGeoSupported } from "../../swSupport";
+import { CurrentPlaceContext, PlacesContext } from "@/app/contexts";
+import { INearby } from "@/app/types";
 
 export default function Search() {
-    // const [myPlaces, setMyPlaces] = useContext(PlacesContext)
+    const { places, savePlace } = useContext<any>(PlacesContext)
+
+    // const { place, setPlace } = useContext<any>(CurrentPlaceContext)
+    const [place, setPlace] = useState<INearby | undefined>();
+    const [info, setInfo] = useState<google.maps.InfoWindow | undefined>();
+    const [marker, setMarker] = useState<google.maps.marker.AdvancedMarkerElement | undefined>();
 
     const [searchText, setSearchText] = useState<string>('')
     const [predictionResults, setPredictionResults] = useState<Array<google.maps.places.AutocompletePrediction>>([]);
@@ -19,6 +26,22 @@ export default function Search() {
     const [placesService, setPlacesService] = useState<google.maps.places.PlacesService | null>();
     const [autocompleteService, setAutocompleteService] = useState<google.maps.places.AutocompleteService | null>();
     const [sessionToken, setSessionToken] = useState<google.maps.places.AutocompleteSessionToken | undefined>();
+
+    // TODO: Temportary until reducers are set up
+    useEffect(() => {
+        // Client-side-only code
+        if (typeof window !== "undefined") {
+            window.addEventListener('message', (event) => {
+                if (place && event.data === 'tonari_add_place') {
+                    handleAdd();
+
+                    if (info) info.close();
+                    if (marker) marker.position = null;
+                }
+            });
+        }
+    }, [])
+
 
     useEffect(() => {
         const hasRequisite = isGeoSupported();
@@ -55,6 +78,23 @@ export default function Search() {
 
     }, [placesLib, map])
 
+    const placeInfo = (text: string | undefined, address: string | undefined) => {
+        return `<div class='inset-10'><h1 class="text-lg font-bold">${text}</h1><p class='py-2'>${address}</p><a class="text-sm font-semibold" href="javascript:window.postMessage('tonari_add_place')">Add to your List</a></div>`
+    }
+
+    const placeMarker = () => {
+        return `<span id="tonari-marker" class="h-8 w-8 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full bg-green-600 text-green-100 ">隣</span>`
+    }
+
+    const handleAdd = useDebouncedCallback(() => {
+        if (!place) return;
+
+        savePlace(place);
+
+        console.info(`Added ${place.text} to myPlaces`);
+        console.info([...places, place]);
+    }, 300);
+
     const handleSearch = useDebouncedCallback(async (input) => {
         let locationBias = null
         const options = {
@@ -88,14 +128,17 @@ export default function Search() {
     }, 300);
 
     const handleClick = (place_id: string) => {
-        if (!placesService) return;
+        if (!placesService) {
+            console.warn("No places service available");
+            return;
+        }
 
         placesService.getDetails({ placeId: place_id }, (place, status) => {
             if (status === "OK") {
                 setPredictionResults([]);
                 setSearchText('');
 
-                console.log(place);
+                // console.log(place);
 
                 if (!place || !map) return;
 
@@ -105,21 +148,41 @@ export default function Search() {
                 if (!lat || !lng) return;
                 map.panTo({ lat, lng });
 
-                const marker = new google.maps.Marker({ position: { lat, lng }, map, title: place.name });
-                const info = new google.maps.InfoWindow({ content: place.name }).open(map, marker);
+                const c = document.createElement('div');
+                c.innerHTML = placeMarker();
 
-                // console.info("Adding place to myPlaces:")
-                // console.info(myPlaces);
+                const marker = new google.maps.marker.AdvancedMarkerElement({
+                    position: { lat, lng },
+                    map,
+                    title: place.name,
+                    content: c
+                });
 
-                // myPlaces.push({
-                //     id: '',
-                //     text: place.name,
-                //     center: [lng, lat],
-                // })
+                const info = new google.maps.InfoWindow({ content: placeInfo(place.name, place.adr_address) });
+                info.open(map, marker)
+                info.addListener('closeclick', () => marker.position = null);
+
+                setInfo(info);
+                setMarker(marker);
+
+                const newPlace = {
+                    id: place.place_id,
+                    text: place.name,
+                    place_name: `${place.name}, ${place.formatted_address}`,
+                    center: [lng, lat],
+                    properties: {
+                        address: place.formatted_address,
+                    }
+                } as INearby;
+
+                setPlace(newPlace);
+
+                // console.log(newPlace);
+
+                // savePlace(newPlace);
+
                 // console.info(`Added ${place.name} to myPlaces`);
-                // console.info(myPlaces);
-
-                // setMyPlaces(myPlaces);
+                // console.info([...places, newPlace]);
             }
 
             setPredictionResults([]);

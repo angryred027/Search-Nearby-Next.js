@@ -24,6 +24,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  height: 100dvh;
+  overflow: hidden;
 }
 
 @layer utilities {
@@ -48,4 +50,10 @@ nav {
 
 .gm-style iframe + div { 
   border:none!important; 
+}
+
+.gm-style-iw-a button {
+  /* margin-top: -28px; */
+  top: 0 !important;
+  right: 0 !important;
 }

@@ -5,6 +5,7 @@ import Navigation from "./components/navigation";
 import Providers from "./utils/providers";
 import Notify from "./components/notify";
 import Search from "./components/search";
+import Place from "./components/place";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,6 +49,7 @@ export default function RootLayout({
           </div>
           <span id="buffer" className="block min-h-20" aria-hidden />
           {children}
+          <Place />
         </Providers>
       </body>
     </html>

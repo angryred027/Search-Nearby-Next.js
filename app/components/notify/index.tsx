@@ -52,7 +52,7 @@ export default function Notify() {
     }, []);
 
     useEffect(() => {
-        console.info("Service worker registration state: ", registration?.active?.state)
+        // console.info("Service worker registration state: ", registration?.active?.state)
         setIsInstalled(registration?.active?.state === "activated")
     }, [registration?.active?.state])
 

@@ -13,7 +13,7 @@ function classNames(...classes: any[]) {
 }
 
 export default function List() {
-    const myPlaces = useContext<INearby[] | null>(PlacesContext)
+    const { places } = useContext<any>(PlacesContext)
     const routesLib = useMapsLibrary('routes')
 
     const [position, setPosition] = useState<GeolocationPosition>();
@@ -44,7 +44,7 @@ export default function List() {
     }, []);
 
     useEffect(() => {
-        if (!routesLib || !myPlaces || !position) {
+        if (!routesLib || !places || !position) {
             console.warn('[list] Routes dependencies not ready')
             return;
         }
@@ -54,9 +54,9 @@ export default function List() {
 
         const { latitude, longitude } = position.coords;
 
-    }, [myPlaces, routesLib, position])
+    }, [places, routesLib, position])
 
-    /* TODO: Add distancwe to each place
+    /* TODO: Add distance to each place
         const placesWithDistance = myPlaces.map((restaurant: INearby, index: number) => {
             const { center } = restaurant
             const route = {
@@ -86,6 +86,7 @@ export default function List() {
     */
 
     const renderWishList = () => {
+        if (!pins || pins.length === 0) return <p className="text-center text-lg">No places added yet</p>
         return (
             <>
                 <Menu as="div" className="py-2 px-4 max-w-prose flex-grow">
@@ -98,9 +99,9 @@ export default function List() {
     }
 
     const pins = useMemo(() => {
-        if (!myPlaces) return;
+        if (!places) return;
 
-        return myPlaces.map((restaurant: any, index: number) => {
+        return places.map((restaurant: any, index: number) => {
             console.info('[nearby] Rendering pins')
             const { text, properties, center, place_name } = restaurant
 
@@ -116,12 +117,12 @@ export default function List() {
                         href={`?place=${text}`}
                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 flex gap-2')}
                     >
-                        <span className='font-bold'>{(index + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}.</span> {text} <span className='flex-grow' /> 1 mi.
+                        <span className='font-bold'>{(index + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}.</span> {text} <span className='flex-grow' /> ?? mi.
                     </a>
                 )}
             </Menu.Item>)
         })
-    }, [myPlaces]
+    }, [places]
     );
 
     return (
