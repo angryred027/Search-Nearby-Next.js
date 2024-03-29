@@ -71,8 +71,6 @@ export default function Map() {
     const info = useMemo(() => {
         if (!details) return;
 
-
-
         const { text, properties, center, place_name } = details
         console.info(details)
 
@@ -81,7 +79,7 @@ export default function Map() {
         const longitude = center[0]
 
         return (
-            <InfoWindow position={{ lat: latitude, lng: longitude }}>
+            <InfoWindow position={{ lat: latitude, lng: longitude }} onCloseClick={() => setDetails(undefined)}>
                 <div className='inset-10'>
                     <h1 className="text-lg font-bold">{text}</h1>
                     <p className='py-2'>{address}</p>

@@ -27,7 +27,7 @@ export default function Search() {
     const [autocompleteService, setAutocompleteService] = useState<google.maps.places.AutocompleteService | null>();
     const [sessionToken, setSessionToken] = useState<google.maps.places.AutocompleteSessionToken | undefined>();
 
-    // TODO: Temportary until reducers are set up
+    // TODO: Temporary until reducers are set up
     useEffect(() => {
         // Client-side-only code
         if (typeof window !== "undefined") {
@@ -42,7 +42,6 @@ export default function Search() {
         }
     }, [])
 
-
     useEffect(() => {
         const hasRequisite = isGeoSupported();
 
@@ -55,6 +54,18 @@ export default function Search() {
             console.info("[search] Geolocation is not supported");
         }
     }, []);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.info(document.getElementById("tonari-add-place"))
+            document.getElementById("tonari-add-place")?.addEventListener('click', () => {
+                handleAdd();
+
+                if (info) info.close();
+                if (marker) marker.position = null;
+            });
+        }
+    }, [info, marker])
 
     useEffect(() => {
         if (position && map) {
@@ -79,7 +90,7 @@ export default function Search() {
     }, [placesLib, map])
 
     const placeInfo = (text: string | undefined, address: string | undefined) => {
-        return `<div class='inset-10'><h1 class="text-lg font-bold">${text}</h1><p class='py-2'>${address}</p><a class="text-sm font-semibold" href="javascript:window.postMessage('tonari_add_place')">Add to your List</a></div>`
+        return `<div class='inset-10'><h1 class="text-lg font-bold">${text}</h1><p class='py-2'>${address}</p><button id="tonari-add-place" type="button" class="text-sm font-semibold">Add to your List</button></div>`
     }
 
     const placeMarker = () => {
@@ -161,6 +172,12 @@ export default function Search() {
                 const info = new google.maps.InfoWindow({ content: placeInfo(place.name, place.adr_address) });
                 info.open(map, marker)
                 info.addListener('closeclick', () => marker.position = null);
+                info.addListener('click', () => {
+                    handleAdd();
+
+                    if (info) info.close();
+                    if (marker) marker.position = null;
+                });
 
                 setInfo(info);
                 setMarker(marker);
