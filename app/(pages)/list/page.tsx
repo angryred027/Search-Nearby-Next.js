@@ -89,7 +89,8 @@ export default function List() {
         if (!pins || pins.length === 0) return <p className="text-center text-lg">No places added yet</p>
         return (
             <>
-                <Menu as="div" className="py-2 px-4 max-w-prose flex-grow">
+                <p className='text-sm py-2 px-4'>Places to Visit ({pins.length})</p>
+                <Menu as="div" className="py-2 px-4 max-w-prose">
                     <Menu.Items id='popover-menu' static className="rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         {pins}
                     </Menu.Items>
@@ -98,37 +99,76 @@ export default function List() {
         )
     }
 
-    const pins = useMemo(() => {
+    const renderCheckedList = () => {
+        if (!checked || checked.length === 0) return <p className="text-center text-lg">No places visited yet</p>
+        return (
+            <>
+                <p className='text-sm py-2 px-4'>Places Visited ({checked.length})</p>
+                <Menu as="div" className="py-2 px-4 max-w-prose">
+
+                    <Menu.Items id='popover-menu' static className="rounded-md bg-white py-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {checked}
+                    </Menu.Items>
+                </Menu>
+            </>
+        )
+    }
+
+    const checked = useMemo(() => {
         if (!places) return;
 
-        return places.map((restaurant: any, index: number) => {
+        return places.filter((p: INearby) => p.tags?.includes('visited')).map((restaurant: INearby, index: number) => {
             console.info('[nearby] Rendering pins')
-            const { text, properties, center, place_name } = restaurant
+            const { name, address, center } = restaurant
 
-            const address = place_name
             const latitude = center[1]
             const longitude = center[0]
 
-            const id = `list-${address.replaceAll(' ', '')}` || `list-neighbor-${latitude}-${longitude}`
+            const id = address ? `list-${address.replaceAll(' ', '')}` : `list-neighbor-${latitude}-${longitude}`
 
             return (<Menu.Item key={id}>
                 {({ active }) => (
                     <a
-                        href={`?place=${text}`}
+                        href={`?place=${name}`}
                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 flex gap-2')}
                     >
-                        <span className='font-bold'>{(index + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}.</span> {text} <span className='flex-grow' /> ?? mi.
+                        <span className='font-bold'>{(index + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}.</span> {name} <span className='flex-grow' /> -- mi.
                     </a>
                 )}
             </Menu.Item>)
         })
-    }, [places]
-    );
+    }, [places]);
+
+    const pins = useMemo(() => {
+        if (!places) return;
+
+        return places.filter((p: INearby) => !p.tags?.includes('visited')).map((restaurant: INearby, index: number) => {
+            console.info('[nearby] Rendering pins')
+            const { name, address, center } = restaurant
+
+            const latitude = center[1]
+            const longitude = center[0]
+
+            const id = address ? `list-${address.replaceAll(' ', '')}` : `list-neighbor-${latitude}-${longitude}`
+
+            return (<Menu.Item key={id}>
+                {({ active }) => (
+                    <a
+                        href={`?place=${name}`}
+                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 flex gap-2')}
+                    >
+                        <span className='font-bold'>{(index + 1).toLocaleString('en', { minimumIntegerDigits: 2 })}.</span> {name} <span className='flex-grow' /> -- mi.
+                    </a>
+                )}
+            </Menu.Item>)
+        })
+    }, [places]);
 
     return (
         <section id="page-list">
-            <div className="w-dvw h-dvh flex justify-center">
+            <div className="w-dvw h-dvh flex flex-col align-center">
                 {renderWishList()}
+                {renderCheckedList()}
             </div>
         </section>
     )

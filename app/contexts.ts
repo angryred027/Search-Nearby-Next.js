@@ -25,16 +25,20 @@ export const usePlacesContext = () => {
 
 // Place Context
 // Describes a single place, currently selected
-type CurrentPlaceContextType = { 
-    place: INearby | undefined, 
-    setPlace: (place: INearby) => void,
-}
-export const CurrentPlaceContext = createContext<CurrentPlaceContextType | null>(null)
-
-export const useCurrentPlaceContext = () => {
-    const context = useContext(CurrentPlaceContext)
+export const PlaceContext = createContext<INearby | null>(null);
+export const usePlaceContext = () => {
+    const context = useContext(PlaceContext)
     if (context === undefined) {
-        throw new Error('useCurrentPlaceContext must be used within a CurrentPlaceProvider')
+        throw new Error('usePlaceContext must be used within a PlaceProvider')
+    }
+    return context
+}
+
+export const PlaceDispatchContext = createContext<React.Dispatch<any> | null>(null);
+export const usePlaceDispatchContext = () => {
+    const context = useContext(PlaceDispatchContext)
+    if (context === undefined) {
+        throw new Error('usePlaceDispatchContext must be used within a PlaceProvider')
     }
     return context
 }

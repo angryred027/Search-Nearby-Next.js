@@ -1,11 +1,18 @@
 export interface INearby {
-    id: string;
-    text: string;
-    place_name: string;
+    id: string | undefined;
+    name?: string,
+    address?: string;
+    phone?: string;
+    rating?: number;
+    priceLevel?: number;
+    website?: string;
     center: [number, number];
-    properties?: {
-        address: string;
-    }
+    isOpen: boolean;
+    status?: string;
+    hours?: string[]
+    description?: string;
+    photos?: any[]
+    tags?: string[]
   }
 
 export type NearbyContextType = {

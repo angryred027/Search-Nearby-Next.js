@@ -65,8 +65,8 @@ export default function Notify() {
 
         try {
             const randomItem = Math.floor(Math.random() * nearbyData.length);
-            const notifTitle = `${nearbyData[randomItem].text} is nearby!`;
-            const notifBody = `Drop in at ${nearbyData[randomItem].properties?.address}.`;
+            const notifTitle = `${nearbyData[randomItem].name} is nearby!`;
+            const notifBody = `Drop in at ${nearbyData[randomItem].address}.`;
             // const notifImg = `data/img/${games[randomItem].slug}.jpg`;
             const options = {
                 body: notifBody,

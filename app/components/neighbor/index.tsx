@@ -16,7 +16,7 @@ export default function Neighbor({ id, latitude, longitude, handleClick, content
     // color = 'red'
 
     let extraStyles = ''
-    const baseStyles = 'h-8 w-8 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full'
+    const baseStyles = 'h-6 w-6 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full'
 
     switch (color) {
         case 'blue':

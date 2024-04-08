@@ -1,18 +1,15 @@
 'use client'
 
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { ChangeEvent, useContext, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { useDebouncedCallback } from 'use-debounce';
 import { isGeoSupported } from "../../swSupport";
-import { CurrentPlaceContext, PlacesContext } from "@/app/contexts";
+import { usePlaceDispatchContext } from "@/app/contexts";
 import { INearby } from "@/app/types";
 
 export default function Search() {
-    const { places, savePlace } = useContext<any>(PlacesContext)
+    const dispatch = usePlaceDispatchContext()!;
 
-    // const { place, setPlace } = useContext<any>(CurrentPlaceContext)
-    const [place, setPlace] = useState<INearby | undefined>();
-    const [info, setInfo] = useState<google.maps.InfoWindow | undefined>();
     const [marker, setMarker] = useState<google.maps.marker.AdvancedMarkerElement | undefined>();
 
     const [searchText, setSearchText] = useState<string>('')
@@ -20,27 +17,12 @@ export default function Search() {
 
     const [position, setPosition] = useState<GeolocationPosition>();
 
-    const map = useMap('map');
+    const map = useMap('tonari-map');
     const placesLib = useMapsLibrary('places');
 
     const [placesService, setPlacesService] = useState<google.maps.places.PlacesService | null>();
     const [autocompleteService, setAutocompleteService] = useState<google.maps.places.AutocompleteService | null>();
     const [sessionToken, setSessionToken] = useState<google.maps.places.AutocompleteSessionToken | undefined>();
-
-    // TODO: Temporary until reducers are set up
-    useEffect(() => {
-        // Client-side-only code
-        if (typeof window !== "undefined") {
-            window.addEventListener('message', (event) => {
-                if (place && event.data === 'tonari_add_place') {
-                    handleAdd();
-
-                    if (info) info.close();
-                    if (marker) marker.position = null;
-                }
-            });
-        }
-    }, [])
 
     useEffect(() => {
         const hasRequisite = isGeoSupported();
@@ -54,18 +36,6 @@ export default function Search() {
             console.info("[search] Geolocation is not supported");
         }
     }, []);
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            console.info(document.getElementById("tonari-add-place"))
-            document.getElementById("tonari-add-place")?.addEventListener('click', () => {
-                handleAdd();
-
-                if (info) info.close();
-                if (marker) marker.position = null;
-            });
-        }
-    }, [info, marker])
 
     useEffect(() => {
         if (position && map) {
@@ -89,22 +59,12 @@ export default function Search() {
 
     }, [placesLib, map])
 
-    const placeInfo = (text: string | undefined, address: string | undefined) => {
-        return `<div class='inset-10'><h1 class="text-lg font-bold">${text}</h1><p class='py-2'>${address}</p><button id="tonari-add-place" type="button" class="text-sm font-semibold">Add to your List</button></div>`
-    }
-
     const placeMarker = () => {
-        return `<span id="tonari-marker" class="h-8 w-8 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full bg-green-600 text-green-100 ">隣</span>`
+        return `<span id='tonari-marker' class="relative flex h-6 w-6 cursor-pointer">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="z-10 h-6 w-6 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full bg-green-600 text-green-100">隣</span>
+                </span>`
     }
-
-    const handleAdd = useDebouncedCallback(() => {
-        if (!place) return;
-
-        savePlace(place);
-
-        console.info(`Added ${place.text} to myPlaces`);
-        console.info([...places, place]);
-    }, 300);
 
     const handleSearch = useDebouncedCallback(async (input) => {
         let locationBias = null
@@ -149,8 +109,6 @@ export default function Search() {
                 setPredictionResults([]);
                 setSearchText('');
 
-                // console.log(place);
-
                 if (!place || !map) return;
 
                 const lat = place.geometry?.location?.lat();
@@ -159,7 +117,10 @@ export default function Search() {
                 if (!lat || !lng) return;
                 map.panTo({ lat, lng });
 
+                document.getElementById('tonari-search-marker')?.remove();
+
                 const c = document.createElement('div');
+                c.id = 'tonari-search-marker';
                 c.innerHTML = placeMarker();
 
                 const marker = new google.maps.marker.AdvancedMarkerElement({
@@ -169,37 +130,23 @@ export default function Search() {
                     content: c
                 });
 
-                const info = new google.maps.InfoWindow({ content: placeInfo(place.name, place.adr_address) });
-                info.open(map, marker)
-                info.addListener('closeclick', () => marker.position = null);
-                info.addListener('click', () => {
-                    handleAdd();
-
-                    if (info) info.close();
-                    if (marker) marker.position = null;
-                });
-
-                setInfo(info);
                 setMarker(marker);
 
-                const newPlace = {
-                    id: place.place_id,
-                    text: place.name,
-                    place_name: `${place.name}, ${place.formatted_address}`,
+                const newPlace: INearby = {
+                    id: place.place_id || crypto.randomUUID(),
+                    name: place.name,
+                    address: place.formatted_address,
+                    phone: place.formatted_phone_number,
+                    rating: place.rating,
+                    priceLevel: place.price_level,
+                    website: place.website,
                     center: [lng, lat],
-                    properties: {
-                        address: place.formatted_address,
-                    }
-                } as INearby;
-
-                setPlace(newPlace);
-
-                // console.log(newPlace);
-
-                // savePlace(newPlace);
-
-                // console.info(`Added ${place.name} to myPlaces`);
-                // console.info([...places, newPlace]);
+                    isOpen: place.opening_hours?.isOpen() || false,
+                    status: place.business_status,
+                    hours: place.opening_hours?.weekday_text,
+                    photos: place.photos,
+                }
+                dispatch({ type: 'SET_PLACE', payload: newPlace });
             }
 
             setPredictionResults([]);

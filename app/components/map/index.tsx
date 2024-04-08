@@ -5,13 +5,13 @@ import { Map as GMap, InfoWindow } from '@vis.gl/react-google-maps';
 import { isGeoSupported, isStorageSupported } from '../../swSupport';
 
 import Neighbor from '../neighbor';
-import { PlacesContext } from '../../contexts';
+import { PlacesContext, usePlaceDispatchContext } from '../../contexts';
 import { INearby } from '@/app/types';
 
 export default function Map() {
     const { places } = useContext<any>(PlacesContext)
+    const dispatch = usePlaceDispatchContext()!;
 
-    const [details, setDetails] = useState<INearby>();
     const [position, setPosition] = useState<GeolocationPosition>();
     const center = useMemo(() => ({ lat: 41.9484424, lng: -87.657913 }), []);
 
@@ -54,45 +54,41 @@ export default function Map() {
 
     const pins = useMemo(() => {
         if (!places) return;
-        return places.map((restaurant: any, index: number) => {
+        return places.map((place: INearby, index: number) => {
             console.info('[nearby] Rendering pins')
-            const { center, place_name } = restaurant
+            try {
+                const { center, address } = place
 
-            const address = place_name
-            const latitude = center[1]
-            const longitude = center[0]
+                const latitude = center[1]
+                const longitude = center[0]
 
-            const id = `${address.replaceAll(' ', '')}` || `neighbor-${latitude}-${longitude}`
+                const id = address ? `${address.replaceAll(' ', '')}` : `neighbor-${latitude}-${longitude}`
 
-            return (<Neighbor id={id} key={id} latitude={latitude} longitude={longitude} handleClick={() => setDetails(restaurant)} />)
+                const color = place.tags?.includes('visited') ? 'yellow' : 'red'
+
+                return (<Neighbor id={id} key={id} latitude={latitude} longitude={longitude} handleClick={() => handlePlaceClick(place)} color={color} />)
+            } catch (e) {
+                console.warn('[nearby] Error rendering pin: ' + place.name)
+                console.warn(e)
+            }
+
+            return null;
         })
     }, [places]);
 
-    const info = useMemo(() => {
-        if (!details) return;
+    const handlePlaceClick = (place: INearby) => {
+        // TODO: should be a ref?
+        const map = document.getElementById('tonari-map')
 
-        const { text, properties, center, place_name } = details
-        console.info(details)
+        if (!map) return;
 
-        const address = properties?.address
-        const latitude = center[1]
-        const longitude = center[0]
-
-        return (
-            <InfoWindow position={{ lat: latitude, lng: longitude }} onCloseClick={() => setDetails(undefined)}>
-                <div className='inset-10'>
-                    <h1 className="text-lg font-bold">{text}</h1>
-                    <p className='py-2'>{address}</p>
-                </div>
-            </InfoWindow>
-        )
-    }, [details])
+        dispatch({ type: 'SET_PLACE', payload: place });
+    }
 
     return (
-        <GMap id={'map'} mapId={'bf51a910020fa25a'} defaultCenter={center} defaultZoom={16} gestureHandling={"greedy"} minZoom={14} maxZoom={22} disableDefaultUI fullscreenControl={false}>
+        <GMap id={'tonari-map'} mapId={'bf51a910020fa25a'} defaultCenter={center} defaultZoom={16} gestureHandling={"greedy"} minZoom={14} maxZoom={22} disableDefaultUI fullscreenControl={false}>
             {userMarker}
             {pins}
-            {info}
         </GMap>
     )
 }
