@@ -66,7 +66,7 @@ export default function Place() {
             console.info(`Starting nav for ${place.name}`);
 
             const dest = place.address?.replaceAll(' ', '+');
-            window.open(`http://maps.apple.com/?daddr=${dest}`, '_blank'); // TODO: verify on Android, Windows
+            window.open(`http://maps.apple.com/?daddr=${dest}`); // TODO: verify on Android, Windows
         }
 
         closeModal();

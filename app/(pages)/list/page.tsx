@@ -126,6 +126,8 @@ export default function List() {
 
             const id = address ? `list-${address.replaceAll(' ', '')}` : `list-neighbor-${latitude}-${longitude}`
 
+            if (!name) return;
+
             return (<Menu.Item key={id}>
                 {({ active }) => (
                     <a
@@ -150,6 +152,8 @@ export default function List() {
             const longitude = center[0]
 
             const id = address ? `list-${address.replaceAll(' ', '')}` : `list-neighbor-${latitude}-${longitude}`
+
+            if (!name) return;
 
             return (<Menu.Item key={id}>
                 {({ active }) => (
