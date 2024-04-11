@@ -57,16 +57,16 @@ export default function Map() {
         return places.map((place: INearby, index: number) => {
             console.info('[nearby] Rendering pins')
             try {
-                const { center, address } = place
+                const { id, center, address } = place!;
 
                 const latitude = center[1]
                 const longitude = center[0]
 
-                const id = address ? `${address.replaceAll(' ', '')}` : `neighbor-${latitude}-${longitude}`
+                const alt_id = id || `neighbor-${latitude}-${longitude}`
 
                 const color = place.tags?.includes('visited') ? 'yellow' : 'red'
 
-                return (<Neighbor id={id} key={id} latitude={latitude} longitude={longitude} handleClick={() => handlePlaceClick(place)} color={color} />)
+                return (<Neighbor id={alt_id} key={alt_id} latitude={latitude} longitude={longitude} handleClick={() => handlePlaceClick(place)} color={color} />)
             } catch (e) {
                 console.warn('[nearby] Error rendering pin: ' + place.name)
                 console.warn(e)

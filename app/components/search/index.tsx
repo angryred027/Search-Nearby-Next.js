@@ -1,16 +1,17 @@
 'use client'
 
 import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { useDebouncedCallback } from 'use-debounce';
 import { isGeoSupported } from "../../swSupport";
-import { usePlaceDispatchContext } from "@/app/contexts";
+import { PlacesContext, usePlaceDispatchContext } from "@/app/contexts";
 import { INearby } from "@/app/types";
 
 export default function Search() {
     const dispatch = usePlaceDispatchContext()!;
 
     const [marker, setMarker] = useState<google.maps.marker.AdvancedMarkerElement | undefined>();
+    const { places } = useContext<any>(PlacesContext);
 
     const [searchText, setSearchText] = useState<string>('')
     const [predictionResults, setPredictionResults] = useState<Array<google.maps.places.AutocompletePrediction>>([]);
@@ -59,10 +60,10 @@ export default function Search() {
 
     }, [placesLib, map])
 
-    const placeMarker = () => {
-        return `<span id='tonari-marker' class="relative flex h-6 w-6 cursor-pointer">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="z-10 h-6 w-6 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full bg-green-600 text-green-100">隣</span>
+    const placeMarker = (color: string = 'green') => {
+        return `<span id='tonari-marker-result' class="relative flex h-6 w-6 cursor-pointer z-10">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-${color}-400 opacity-75"></span>
+                    <span class="h-6 w-6 inline-flex items-center justify-center px-1 py-1 subpixel-antialiased text-sm font-thin leading-none rounded-full bg-${color}-600 text-${color}-100">隣</span>
                 </span>`
     }
 
@@ -117,11 +118,14 @@ export default function Search() {
                 if (!lat || !lng) return;
                 map.panTo({ lat, lng });
 
-                document.getElementById('tonari-search-marker')?.remove();
+                // search places to see if place_id exists in array
+                const found = places.find((p: INearby) => p.id === place_id);
+
+                document.getElementById('tonari-search')?.remove();
 
                 const c = document.createElement('div');
-                c.id = 'tonari-search-marker';
-                c.innerHTML = placeMarker();
+                c.id = 'tonari-search';
+                c.innerHTML = placeMarker(found ? 'red' : 'green');
 
                 const marker = new google.maps.marker.AdvancedMarkerElement({
                     position: { lat, lng },

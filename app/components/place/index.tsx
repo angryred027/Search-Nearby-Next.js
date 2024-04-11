@@ -2,6 +2,7 @@
 
 import { PlacesContext, usePlaceContext, usePlaceDispatchContext } from '@/app/contexts'
 import { Dialog, Transition } from '@headlessui/react'
+import { MapIcon, CheckIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -18,7 +19,6 @@ export default function Place() {
     useEffect(() => {
         if (place !== null) {
             console.info('[place] Initializing place dialog');
-            console.info('[place] Details for ' + place?.name);
 
             const found = places.find((p: any) => p.id === place.id);
             console.info(`[place] is ${place.name} in list: ${!!found}`);
@@ -28,6 +28,8 @@ export default function Place() {
             setIsVisited(visited || false);
 
             openModal();
+            console.info('[place] Showing details for ' + place?.name);
+            console.info(place)
         }
     }, [place])
 
@@ -57,8 +59,24 @@ export default function Place() {
         closeModal();
     }, 300);
 
+    const handleNav = useDebouncedCallback(() => {
+        if (!place) return;
+
+        if (typeof window !== 'undefined') {
+            console.info(`Starting nav for ${place.name}`);
+
+            const dest = place.address?.replaceAll(' ', '+');
+            window.open(`http://maps.apple.com/?daddr=${dest}`, '_blank'); // TODO: verify on Android, Windows
+        }
+
+        closeModal();
+    }, 300);
+
     function closeModal() {
         dispatch({ type: 'CLEAR_PLACE' })
+
+        document.getElementById('tonari-search')?.remove();
+
         setIsOpen(false)
     }
 
@@ -117,24 +135,39 @@ export default function Place() {
                                         )}
                                     </div>
 
-                                    {!isInList && !isVisited && (<div className="mt-4">
+                                    <div className="mt-4 flex gap-2">
+                                        {!isInList && !isVisited && (
+                                            <button
+                                                type="button"
+                                                className="flex items-center space-x-1 rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                                                onClick={handleAdd}
+                                            >
+                                                <PlusIcon className="h-4 w-4 z-10" aria-hidden="true" />
+                                                <span>
+                                                    Add to List
+                                                </span>
+                                            </button>)}
+                                        {isInList && !isVisited && (
+                                            <button
+                                                type="button"
+                                                className="flex items-center space-x-1 justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                                onClick={handleRemove}
+                                            >
+
+                                                <CheckIcon className="h-4 w-4 z-10" aria-hidden="true" />
+                                                <span>
+                                                    Visited
+                                                </span>
+                                            </button>)}
+                                        <span className="flex-grow"></span>
                                         <button
                                             type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                                            onClick={handleAdd}
+                                            className="flex items-center space-x-1 rounded-md border border-transparent bg-gray-200 px-2 py-2 text-sm font-medium text-gray-900 hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                                            onClick={handleNav}
                                         >
-                                            Add to List!
+                                            <MapIcon className="h-6 w-6 z-10" aria-hidden="true" />
                                         </button>
-                                    </div>)}
-                                    {isInList && !isVisited && (<div className="mt-4">
-                                        <button
-                                            type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                            onClick={handleRemove}
-                                        >
-                                            Visited!
-                                        </button>
-                                    </div>)}
+                                    </div>
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>

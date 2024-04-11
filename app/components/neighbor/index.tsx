@@ -38,7 +38,7 @@ export default function Neighbor({ id, latitude, longitude, handleClick, content
     return (
         <div className={className}>
             <AdvancedMarker key={id} position={{ lat: latitude, lng: longitude }} onClick={() => handleClick()}>
-                <span id="tonari-marker" style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className={className}>{content}</span>
+                <span id={`tonari-marker-${id}`} style={{ transform: "translate(${-size / 2}px,${-size}px)" }} className={className}>{content}</span>
             </AdvancedMarker>
         </div>
     )
